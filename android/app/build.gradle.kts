@@ -39,6 +39,10 @@ android {
     }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-Xlint:-options")
+}
+
 flutter {
     source = "../.."
 }
