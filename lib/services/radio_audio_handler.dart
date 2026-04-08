@@ -3,8 +3,6 @@ import 'package:just_audio/just_audio.dart';
 
 const _streamUrl = 'https://cactus2.uninorte.edu.co/;stream.mp3';
 
-/// Handles background audio playback, lock screen controls,
-/// and notification integration via audio_service.
 class RadioAudioHandler extends BaseAudioHandler {
   final AudioPlayer _player = AudioPlayer();
 
@@ -16,43 +14,40 @@ class RadioAudioHandler extends BaseAudioHandler {
       album: 'Mueve la Cultura',
     ));
 
-    // Bridge just_audio events to audio_service playback state
-    _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
+    // Bridge just_audio events → audio_service playback state.
+    // handleError swallows stream-level errors (e.g. ExoPlayer source errors)
+    // so they don't become unhandled exceptions that crash the app.
+    _player.playbackEventStream
+        .handleError((_, __) {})
+        .map(_transformEvent)
+        .pipe(playbackState);
   }
 
-  Stream<AudioPlayer> get playerStream => Stream.value(_player);
   AudioPlayer get player => _player;
 
   @override
   Future<void> play() async {
-    try {
-      final cacheBusted =
-          '$_streamUrl?t=${DateTime.now().millisecondsSinceEpoch}';
-      await _player.setAudioSource(AudioSource.uri(Uri.parse(cacheBusted)));
-      await _player.play();
-    } catch (_) {
-      // Errors surface via playbackState stream
-    }
-  }
-
-  @override
-  Future<void> pause() async {
-    await _player.stop();
+    // Use Uri.replace to safely append the cache-busting param so the
+    // semicolon in the path is never re-parsed by Uri.parse.
+    final base = Uri.parse(_streamUrl);
+    final uri = base.replace(
+      queryParameters: {'t': DateTime.now().millisecondsSinceEpoch.toString()},
+    );
+    // Let exceptions propagate — RadioProvider.play() catches them and sets
+    // RadioState.error so the UI can show a useful message.
+    await _player.setAudioSource(AudioSource.uri(uri));
+    await _player.play();
   }
 
   @override
   Future<void> stop() async {
     await _player.stop();
-    // _player.stop() already emits an idle PlaybackEvent through
-    // playbackEventStream, which the pipe forwards to playbackState via
-    // _transformEvent. No manual add() needed — and it would conflict
-    // with the active addStream() pipe anyway.
   }
 
   @override
   Future<void> onTaskRemoved() async {
     await _player.stop();
-    await super.stop(); // Proper cleanup when app is swiped from recents
+    await super.stop();
   }
 
   PlaybackState _transformEvent(PlaybackEvent event) {
