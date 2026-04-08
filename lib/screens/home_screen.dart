@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/radio_provider.dart';
+import '../providers/podcast_provider.dart';
 import '../widgets/audio_visualizer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -232,7 +233,11 @@ class _PlayButton extends StatelessWidget {
     final radio = context.watch<RadioProvider>();
 
     return GestureDetector(
-      onTap: radio.toggle,
+      onTap: () {
+        // Clear any active podcast before starting the radio
+        context.read<PodcastProvider>().clear();
+        radio.toggle();
+      },
       child: SizedBox(
         width: 160,
         height: 160,

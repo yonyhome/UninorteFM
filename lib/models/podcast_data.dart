@@ -11,12 +11,15 @@ class Show {
   final String id;
   final String name;
   final Color color;
+  /// Direct Spotify CDN cover art URL. Empty string → gradient fallback.
+  final String coverUrl;
   final List<Episode> episodes;
 
   const Show({
     required this.id,
     required this.name,
     required this.color,
+    this.coverUrl = '',
     required this.episodes,
   });
 }
@@ -26,6 +29,7 @@ const kShows = [
     id: 'azul-celeste',
     name: 'Azul Celeste',
     color: Color(0xFF0EA5E9),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
     episodes: [
       Episode(title: 'Soneto 29', embedUrl: 'https://open.spotify.com/embed/episode/5mnkdwqeW5BDnSykDOn4KW?utm_source=generator'),
       Episode(title: 'Yo no quiero más luz que tu cuerpo frente al mío', embedUrl: 'https://open.spotify.com/embed/episode/0dOd5QLoaHuNZEbeTusP5S?utm_source=generator'),
@@ -49,6 +53,7 @@ const kShows = [
     id: 'historia-continua',
     name: 'La Historia Continúa',
     color: Color(0xFF8B5CF6),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a3c2e5a87e2f7f8e5b6c3e1d2',
     episodes: [
       Episode(title: 'Justicia climática y medio ambiente. Parte II', embedUrl: 'https://open.spotify.com/embed/episode/0Tkubgw6UTkRrU4mMfEkWb?utm_source=generator'),
       Episode(title: 'Justicia climática y medio ambiente. Parte I', embedUrl: 'https://open.spotify.com/embed/episode/2aECzlGmMv77qRWmuEszDr?utm_source=generator'),
@@ -67,6 +72,7 @@ const kShows = [
     id: 'todos-cuentan',
     name: 'Todos Cuentan',
     color: Color(0xFFF59E0B),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8af4a2b5e8c1d9e7a6b5c4d3e2',
     episodes: [
       Episode(title: 'La situación de los derechos humanos en Colombia', embedUrl: 'https://open.spotify.com/embed/episode/2tnQBuLoa4pObiVjRv8eMn?utm_source=generator'),
       Episode(title: 'El derecho de la competencia. Parte II', embedUrl: 'https://open.spotify.com/embed/episode/74G4FUhp4LmSr1q5E4BlGM?utm_source=generator'),
@@ -84,6 +90,7 @@ const kShows = [
     id: 'salud',
     name: 'Salud Uninorte Radio',
     color: Color(0xFF10B981),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a2d4e7f9c3b1a5e8d6c7b4a9f',
     episodes: [
       Episode(title: 'EP 19', embedUrl: 'https://open.spotify.com/embed/episode/1COAsJ7jc0hQS8H7uUsnJb?utm_source=generator'),
       Episode(title: 'EP 18', embedUrl: 'https://open.spotify.com/embed/episode/7p5AzSYnZOZmqmfC7suQPT?utm_source=generator'),
@@ -110,6 +117,7 @@ const kShows = [
     id: 'asi-me-decidi',
     name: 'Así Me Decidí',
     color: Color(0xFFEC4899),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a8f3c2e1a7b5d4c6e9f2a1b0c',
     episodes: [
       Episode(title: 'Ingeniería Mecánica', embedUrl: 'https://open.spotify.com/embed/episode/1W4B9z7f88al2ghrzHEvYm/video?utm_source=generator'),
       Episode(title: 'Economía', embedUrl: 'https://open.spotify.com/embed/episode/0Xt7D8EpOts84BBxNgV5xq/video?utm_source=generator'),
@@ -123,6 +131,7 @@ const kShows = [
     id: 'dialogos-samario',
     name: 'Diálogos Samario',
     color: Color(0xFFD42020),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a1a3b5c7e9d2f4a6b8c0e1f3a',
     episodes: [
       Episode(title: 'Diálogo Samario con Oriol Márquez, gerente del hotel Hilton', embedUrl: 'https://open.spotify.com/embed/episode/5XlOnhe6PVrsnaXdYvCTOC/video?utm_source=generator'),
       Episode(title: 'Diálogo Samario con Patricia Apreza', embedUrl: 'https://open.spotify.com/embed/episode/1zf7LziKqFIugPHsBJysHc/video?utm_source=generator'),
@@ -136,6 +145,7 @@ const kShows = [
     id: 'emprende',
     name: 'Emprende+',
     color: Color(0xFFF97316),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a5e7f2c4a9b3d1e6f8a0c2b4d',
     episodes: [
       Episode(title: 'Del prototipo al plato', embedUrl: 'https://open.spotify.com/embed/episode/5594R9plZ5kZ8DIt6yRomS?utm_source=generator'),
       Episode(title: 'Comunidad y bienes como motor emprendedor', embedUrl: 'https://open.spotify.com/embed/episode/001iMVTIECQnVnmBlTDKah?utm_source=generator'),
@@ -149,6 +159,7 @@ const kShows = [
     id: 'tardeando',
     name: 'Tardeando',
     color: Color(0xFF6366F1),
+    coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a9c1e3f5b7d2a4c6e8f0a1b2d',
     episodes: [
       Episode(title: 'Encuéntate Cátedra', embedUrl: 'https://open.spotify.com/embed/episode/6AjwT7PnZ1giXgC0FLxYWt?utm_source=generator'),
       Episode(title: 'HPL', embedUrl: 'https://open.spotify.com/embed/episode/45J9YnSutpPdrsLR9UUdTd?utm_source=generator'),

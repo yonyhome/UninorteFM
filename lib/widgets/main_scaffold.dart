@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../providers/radio_provider.dart';
 import '../providers/podcast_provider.dart';
 import '../screens/home_screen.dart';
@@ -19,8 +20,9 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
+  late final PageController _pageCtrl;
 
-  static const _tabs = [
+  static const _tabs = <Widget>[
     HomeScreen(),
     PodcastScreen(),
     ProgramacionScreen(),
@@ -29,39 +31,99 @@ class _MainScaffoldState extends State<MainScaffold> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageCtrl = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageCtrl.dispose();
+    super.dispose();
+  }
+
+  void _goTo(int index) {
+    if (_currentIndex == index) return;
+    setState(() => _currentIndex = index);
+    _pageCtrl.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final radio = context.watch<RadioProvider>();
     final podcast = context.watch<PodcastProvider>();
 
-    // Mini player shows when podcast is active (any tab)
-    // or when radio is active and user is not on the home tab.
+    // Mini player shows when podcast is active OR radio is active outside Home.
     final showMini =
         podcast.isActive || (radio.isActive && _currentIndex != 0);
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        bottom: false,
-        child: IndexedStack(
-          index: _currentIndex,
-          children: _tabs,
-        ),
+      body: Stack(
+        children: [
+          // ── Hidden podcast WebView (always in tree so audio never stops) ──
+          // 1×1 keeps the PlatformView initialized; Offstage would destroy it.
+          Positioned(
+            left: 0,
+            top: 0,
+            child: SizedBox(
+              width: 1,
+              height: 1,
+              child: WebViewWidget(
+                controller: context.read<PodcastProvider>().webController,
+              ),
+            ),
+          ),
+
+          // ── Main page content ──
+          SafeArea(
+            bottom: false,
+            child: PageView.builder(
+              controller: _pageCtrl,
+              itemCount: _tabs.length,
+              onPageChanged: (i) => setState(() => _currentIndex = i),
+              itemBuilder: (_, i) => _KeepAlive(child: _tabs[i]),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Mini player sits right above the nav bar
           MiniPlayer(
             visible: showMini,
-            onNavigateToHome: () => setState(() => _currentIndex = 0),
+            onNavigateToHome: () => _goTo(0),
           ),
-          _BottomNav(
-            currentIndex: _currentIndex,
-            onTap: (i) => setState(() => _currentIndex = i),
-          ),
+          _BottomNav(currentIndex: _currentIndex, onTap: _goTo),
         ],
       ),
     );
+  }
+}
+
+// ─── Keep-alive wrapper ───────────────────────────────────────────────────────
+
+class _KeepAlive extends StatefulWidget {
+  final Widget child;
+  const _KeepAlive({required this.child});
+
+  @override
+  State<_KeepAlive> createState() => _KeepAliveState();
+}
+
+class _KeepAliveState extends State<_KeepAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
 
@@ -86,11 +148,11 @@ class _BottomNav extends StatelessWidget {
           height: 64,
           child: Row(
             children: [
-              _NavItem(icon: const _IconLive(), label: 'En Vivo', index: 0, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconMic(), label: 'Podcast', index: 1, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconCalendar(), label: 'Programación', index: 2, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconCompass(), label: 'Explorar', index: 3, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconDots(), label: 'Más', index: 4, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconLive(), label: 'En Vivo', index: 0, current: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconMic(), label: 'Podcast', index: 1, current: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconCalendar(), label: 'Programación', index: 2, current: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconCompass(), label: 'Explorar', index: 3, current: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconDots(), label: 'Más', index: 4, current: currentIndex, onTap: onTap),
             ],
           ),
         ),
@@ -103,34 +165,32 @@ class _NavItem extends StatelessWidget {
   final Widget icon;
   final String label;
   final int index;
-  final int currentIndex;
+  final int current;
   final ValueChanged<int> onTap;
 
   const _NavItem({
     required this.icon,
     required this.label,
     required this.index,
-    required this.currentIndex,
+    required this.current,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isActive = index == currentIndex;
+    final active = index == current;
     return Expanded(
       child: GestureDetector(
         onTap: () => onTap(index),
         behavior: HitTestBehavior.opaque,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.primary : Colors.transparent,
-          ),
+          color: active ? AppColors.primary : Colors.transparent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AnimatedOpacity(
-                opacity: isActive ? 1.0 : 0.45,
+                opacity: active ? 1.0 : 0.45,
                 duration: const Duration(milliseconds: 180),
                 child: icon,
               ),
@@ -140,7 +200,7 @@ class _NavItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
-                  color: isActive ? Colors.white : Colors.white54,
+                  color: active ? Colors.white : Colors.white54,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -156,34 +216,29 @@ class _NavItem extends StatelessWidget {
 class _IconLive extends StatelessWidget {
   const _IconLive();
   @override
-  Widget build(BuildContext context) =>
-      const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
+  Widget build(_) => const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
 }
 
 class _IconMic extends StatelessWidget {
   const _IconMic();
   @override
-  Widget build(BuildContext context) =>
-      const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
+  Widget build(_) => const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
 }
 
 class _IconCalendar extends StatelessWidget {
   const _IconCalendar();
   @override
-  Widget build(BuildContext context) =>
-      const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
+  Widget build(_) => const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
 }
 
 class _IconCompass extends StatelessWidget {
   const _IconCompass();
   @override
-  Widget build(BuildContext context) =>
-      const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
+  Widget build(_) => const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
 }
 
 class _IconDots extends StatelessWidget {
   const _IconDots();
   @override
-  Widget build(BuildContext context) =>
-      const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
+  Widget build(_) => const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
 }

@@ -3,20 +3,25 @@ import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import '../services/radio_audio_handler.dart';
 
-enum RadioState { idle, loading, playing, error }
+enum RadioState { idle, loading, playing, paused, error }
 
 class RadioProvider extends ChangeNotifier {
   final RadioAudioHandler _handler;
 
   RadioState _state = RadioState.idle;
-  // Prevents false error/idle events caused by user-initiated stop
   bool _isUserStopped = false;
 
   RadioState get state => _state;
   bool get isPlaying => _state == RadioState.playing;
   bool get isLoading => _state == RadioState.loading;
+  bool get isPaused => _state == RadioState.paused;
   bool get isError => _state == RadioState.error;
-  bool get isActive => _state == RadioState.playing || _state == RadioState.loading;
+
+  /// True while audio is playing, loading, or paused (keeps mini player alive).
+  bool get isActive =>
+      _state == RadioState.playing ||
+      _state == RadioState.loading ||
+      _state == RadioState.paused;
 
   RadioProvider(this._handler) {
     _handler.playbackState.stream.listen(_onPlaybackState);
@@ -28,9 +33,7 @@ class RadioProvider extends ChangeNotifier {
     if (state.playing) {
       _setState(RadioState.playing);
     }
-    // Don't react to idle events here — stop() already sets idle explicitly.
-    // Reacting to idle would cause a race where delayed stop-events override
-    // the loading state right after the user taps play again.
+    // Idle/stop events are driven by explicit pause()/stop() calls only.
   }
 
   void _onProcessingState(ProcessingState ps) {
@@ -54,7 +57,6 @@ class RadioProvider extends ChangeNotifier {
     try {
       await _handler.play();
     } catch (_) {
-      // Ignore errors caused by a user-initiated stop interrupting the play
       if (!_isUserStopped) {
         _setState(RadioState.error);
         Future.delayed(const Duration(seconds: 3), () {
@@ -64,6 +66,14 @@ class RadioProvider extends ChangeNotifier {
     }
   }
 
+  /// Pauses the stream but keeps the mini player alive (state → paused).
+  Future<void> pause() async {
+    _isUserStopped = true;
+    await _handler.stop();
+    _setState(RadioState.paused);
+  }
+
+  /// Fully stops the stream and hides the mini player (state → idle).
   Future<void> stop() async {
     _isUserStopped = true;
     await _handler.stop();
@@ -71,8 +81,8 @@ class RadioProvider extends ChangeNotifier {
   }
 
   void toggle() {
-    if (isActive) {
-      stop();
+    if (isPlaying || isLoading) {
+      pause();
     } else {
       play();
     }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/podcast_data.dart';
 import '../providers/podcast_provider.dart';
+import '../providers/radio_provider.dart';
+import '../services/cover_art_service.dart';
 import '../theme/app_theme.dart';
 
 class PodcastScreen extends StatefulWidget {
@@ -12,8 +14,7 @@ class PodcastScreen extends StatefulWidget {
 }
 
 class _PodcastScreenState extends State<PodcastScreen> {
-  // null = "Todos"
-  int? _filterIndex;
+  int? _filterIndex; // null = "Todos"
 
   List<Show> get _visibleShows =>
       _filterIndex == null ? kShows : [kShows[_filterIndex!]];
@@ -62,19 +63,21 @@ class _PodcastScreenState extends State<PodcastScreen> {
                 color: AppColors.primary,
                 onTap: () => setState(() => _filterIndex = null),
               ),
-              ...List.generate(kShows.length, (i) => Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: _Chip(
-                      label: kShows[i].name,
-                      isActive: _filterIndex == i,
-                      color: kShows[i].color,
-                      onTap: () => setState(() => _filterIndex = i),
-                    ),
-                  )),
+              ...List.generate(
+                kShows.length,
+                (i) => Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: _Chip(
+                    label: kShows[i].name,
+                    isActive: _filterIndex == i,
+                    color: kShows[i].color,
+                    onTap: () => setState(() => _filterIndex = i),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-
         const SizedBox(height: 8),
 
         // Show carousels
@@ -85,7 +88,7 @@ class _PodcastScreenState extends State<PodcastScreen> {
             itemBuilder: (_, i) {
               final show = _visibleShows[i];
               return _ShowSection(
-                // Key ensures cards re-animate when filter changes
+                // Key causes cards to re-animate when filter changes
                 key: ValueKey('${show.id}-$_filterIndex'),
                 show: show,
               );
@@ -140,7 +143,7 @@ class _Chip extends StatelessWidget {
   }
 }
 
-// ─── Show section (header + horizontal carousel) ──────────────────────────────
+// ─── Show section ─────────────────────────────────────────────────────────────
 
 class _ShowSection extends StatelessWidget {
   final Show show;
@@ -152,7 +155,7 @@ class _ShowSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section header
+        // Header row
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
           child: Row(
@@ -160,10 +163,8 @@ class _ShowSection extends StatelessWidget {
               Container(
                 width: 10,
                 height: 10,
-                decoration: BoxDecoration(
-                  color: show.color,
-                  shape: BoxShape.circle,
-                ),
+                decoration:
+                    BoxDecoration(color: show.color, shape: BoxShape.circle),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -188,7 +189,7 @@ class _ShowSection extends StatelessWidget {
           ),
         ),
 
-        // Episode carousel
+        // Horizontal episode carousel
         SizedBox(
           height: 195,
           child: ListView.builder(
@@ -201,12 +202,12 @@ class _ShowSection extends StatelessWidget {
                 show: show,
                 episode: show.episodes[i],
                 episodeIndex: i,
+                // Stagger delay capped at 6 cards to avoid long waits
                 delay: Duration(milliseconds: 50 * i.clamp(0, 6)),
               ),
             ),
           ),
         ),
-
         const SizedBox(height: 24),
       ],
     );
@@ -269,9 +270,13 @@ class _EpisodeCardState extends State<_EpisodeCard>
       child: SlideTransition(
         position: _slide,
         child: GestureDetector(
-          onTap: () => context
-              .read<PodcastProvider>()
-              .playEpisode(widget.show, widget.episodeIndex),
+          onTap: () {
+            // Stop radio if active, then load podcast
+            context.read<RadioProvider>().stop();
+            context
+                .read<PodcastProvider>()
+                .playEpisode(widget.show, widget.episodeIndex);
+          },
           child: _CardBody(
             show: widget.show,
             episodeIndex: widget.episodeIndex,
@@ -282,6 +287,8 @@ class _EpisodeCardState extends State<_EpisodeCard>
     );
   }
 }
+
+// ─── Card body ────────────────────────────────────────────────────────────────
 
 class _CardBody extends StatelessWidget {
   final Show show;
@@ -300,6 +307,7 @@ class _CardBody extends StatelessWidget {
       width: 138,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
+        // Gradient fallback — always visible
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -314,7 +322,37 @@ class _CardBody extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          // Decorative circle (top-right)
+          // Real cover art (fetched once per show, cached)
+          Positioned.fill(
+            child: FutureBuilder<String?>(
+              future: CoverArtService.forShow(
+                  show.id, show.episodes.first.embedUrl),
+              builder: (_, snap) {
+                final url = snap.data;
+                if (url == null) return const SizedBox.shrink();
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    // Fade in when ready
+                    frameBuilder: (_, child, frame, wasSync) {
+                      if (wasSync) return child;
+                      return AnimatedOpacity(
+                        opacity: frame == null ? 0 : 1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                        child: child,
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Decorative circle (top-right), shown behind image overlay
           Positioned(
             top: -18,
             right: -18,
@@ -323,18 +361,20 @@ class _CardBody extends StatelessWidget {
               height: 72,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.07),
+                color: Colors.white.withValues(alpha: 0.06),
               ),
             ),
           ),
+
           // EP badge
           Positioned(
             top: 10,
             left: 10,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.45),
+                color: Colors.black.withValues(alpha: 0.55),
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Text(
@@ -342,25 +382,20 @@ class _CardBody extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: Colors.white.withValues(alpha: 0.9),
                   letterSpacing: 0.4,
                 ),
               ),
             ),
           ),
-          // Mic icon (center)
-          const Positioned.fill(
-            child: Center(
-              child: Icon(Icons.mic_rounded, color: Colors.white38, size: 42),
-            ),
-          ),
+
           // Bottom gradient + title
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 24, 10, 11),
+              padding: const EdgeInsets.fromLTRB(10, 28, 10, 11),
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(16),
@@ -370,7 +405,7 @@ class _CardBody extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.82),
+                    Colors.black.withValues(alpha: 0.88),
                   ],
                 ),
               ),
