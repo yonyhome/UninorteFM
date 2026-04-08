@@ -21,10 +21,7 @@ class PodcastProvider extends ChangeNotifier {
       ..addJavaScriptChannel(
         'ProgressBridge',
         onMessageReceived: (msg) => _onProgress(msg.message),
-      )
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (_) => _injectPolling(),
-      ));
+      );
   }
 
   // ── Getters ──────────────────────────────────────────────────────────────────
@@ -59,24 +56,6 @@ class PodcastProvider extends ChangeNotifier {
 
   // ── JS bridge ────────────────────────────────────────────────────────────────
 
-  void _injectPolling() {
-    _webCtrl.runJavaScript(r'''
-      (function() {
-        var interval = setInterval(function() {
-          var a = document.querySelector('audio');
-          if (a) {
-            ProgressBridge.postMessage(JSON.stringify({
-              position: Math.floor(a.currentTime * 1000),
-              duration: isNaN(a.duration) ? 0 : Math.floor(a.duration * 1000),
-              paused: a.paused,
-              ended: a.ended
-            }));
-          }
-        }, 800);
-      })();
-    ''');
-  }
-
   void _onProgress(String message) {
     try {
       final data = jsonDecode(message) as Map<String, dynamic>;
@@ -91,7 +70,10 @@ class PodcastProvider extends ChangeNotifier {
         _state = paused ? PodcastState.paused : PodcastState.playing;
         notifyListeners();
       } else if (_state == PodcastState.playing && paused) {
-        // Don't auto-flip to paused — user may not have paused yet (buffering)
+        _state = PodcastState.paused;
+        notifyListeners();
+      } else if (_state == PodcastState.paused && !paused) {
+        _state = PodcastState.playing;
         notifyListeners();
       } else if (_state != PodcastState.loading) {
         notifyListeners();
@@ -109,33 +91,76 @@ class PodcastProvider extends ChangeNotifier {
     _state = PodcastState.loading;
     notifyListeners();
 
-    final base = show.episodes[index].embedUrl;
-    final uri = Uri.parse(base);
-    final autoUri = uri.replace(
-      queryParameters: {
-        ...uri.queryParameters,
-        'autoplay': '1',
-      },
-    );
-    await _webCtrl.loadRequest(autoUri);
+    final embedUrl = show.episodes[index].embedUrl;
+    
+    // Extract episode ID
+    String episodeId = '';
+    try {
+      final uri = Uri.parse(embedUrl);
+      episodeId = uri.pathSegments.last;
+      if (episodeId == 'video') {
+        episodeId = uri.pathSegments[uri.pathSegments.length - 2];
+      }
+    } catch (e) {
+      episodeId = '';
+    }
+
+    final html = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>body, html { margin: 0; padding: 0; height: 100%; background-color: #000; overflow: hidden; }</style>
+    </head>
+    <body>
+      <div id="embed-iframe"></div>
+      <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+      <script>
+        window.onSpotifyIframeApiReady = (IFrameAPI) => {
+          const element = document.getElementById('embed-iframe');
+          const options = {
+              width: '100%',
+              height: '100%',
+              uri: 'spotify:episode:$episodeId'
+          };
+          const callback = (EmbedController) => {
+            window.spotifyCtrl = EmbedController;
+            EmbedController.addListener('playback_update', e => {
+              ProgressBridge.postMessage(JSON.stringify({
+                position: e.data.position,
+                duration: e.data.duration,
+                paused: e.data.isPaused
+              }));
+            });
+            EmbedController.addListener('ready', () => {
+              EmbedController.play();
+            });
+          };
+          IFrameAPI.createController(element, options, callback);
+        };
+        function playPodcast() { window.spotifyCtrl && window.spotifyCtrl.play(); }
+        function pausePodcast() { window.spotifyCtrl && window.spotifyCtrl.pause(); }
+        function togglePodcast() { window.spotifyCtrl && window.spotifyCtrl.togglePlay(); }
+      </script>
+    </body>
+    </html>
+    ''';
+
+    await _webCtrl.loadHtmlString(html);
   }
 
   Future<void> pause() async {
-    await _webCtrl.runJavaScript("document.querySelector('audio')?.pause()");
-    _state = PodcastState.paused;
-    notifyListeners();
+    await _webCtrl.runJavaScript("pausePodcast()");
   }
 
   Future<void> resume() async {
-    await _webCtrl.runJavaScript("document.querySelector('audio')?.play()");
-    _state = PodcastState.playing;
-    notifyListeners();
+    await _webCtrl.runJavaScript("playPodcast()");
   }
 
   void togglePlayPause() {
     if (isPlaying) {
       pause();
-    } else if (isPaused) {
+    } else {
       resume();
     }
   }

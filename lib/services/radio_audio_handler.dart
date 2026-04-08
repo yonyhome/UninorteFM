@@ -29,15 +29,14 @@ class RadioAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
-    // Use Uri.replace to safely append the cache-busting param so the
-    // semicolon in the path is never re-parsed by Uri.parse.
-    final base = Uri.parse(_streamUrl);
-    final uri = base.replace(
-      queryParameters: {'t': DateTime.now().millisecondsSinceEpoch.toString()},
+    // Load the stream URL directly. Streams don't need cache-busting, 
+    // and appending query parameters to Shoutcast URLs can cause 404/400 errors.
+    await _player.setAudioSource(
+      AudioSource.uri(
+        Uri.parse(_streamUrl),
+        tag: mediaItem.value,
+      )
     );
-    // Let exceptions propagate — RadioProvider.play() catches them and sets
-    // RadioState.error so the UI can show a useful message.
-    await _player.setAudioSource(AudioSource.uri(uri));
     await _player.play();
   }
 
