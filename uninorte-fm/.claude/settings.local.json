@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(mkdir -p \"c:/Users/yonyh/Desktop/uninorte-fm/uninorte_fm_flutter/lib/theme\")",
+      "Bash(mkdir -p \"c:/Users/yonyh/Desktop/uninorte-fm/uninorte_fm_flutter/lib/models\")",
+      "Bash(mkdir -p \"c:/Users/yonyh/Desktop/uninorte-fm/uninorte_fm_flutter/lib/providers\")",
+      "Bash(mkdir -p \"c:/Users/yonyh/Desktop/uninorte-fm/uninorte_fm_flutter/lib/services\")",
+      "Bash(mkdir -p \"c:/Users/yonyh/Desktop/uninorte-fm/uninorte_fm_flutter/lib/screens\")"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+name: uninorte_fm
+description: Uninorte 103.1 FM Estéreo — Mueve la Cultura
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Audio
+  just_audio: ^0.9.40
+  audio_service: ^0.18.15
+  audio_session: ^0.1.21
+
+  # WebView (Spotify embeds + Programación)
+  webview_flutter: ^4.8.0
+
+  # State
+  provider: ^6.1.2
+
+  # Utilities
+  url_launcher: ^6.3.0
+  share_plus: ^10.0.0
+  package_info_plus: ^8.0.0
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
