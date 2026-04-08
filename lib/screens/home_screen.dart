@@ -235,7 +235,7 @@ class _PlayButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Clear any active podcast before starting the radio
-        context.read<PodcastProvider>().clear();
+        context.read<PodcastProvider>().stop();
         radio.toggle();
       },
       child: SizedBox(
@@ -327,6 +327,8 @@ class _ButtonIcon extends StatelessWidget {
         );
       case RadioState.playing:
         return const Icon(Icons.pause_rounded, color: Colors.white, size: 40);
+      case RadioState.paused:
+        return const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 44);
       case RadioState.error:
         return const Icon(Icons.error_outline_rounded, color: Colors.white, size: 36);
       case RadioState.idle:
@@ -351,6 +353,8 @@ class _StatusText extends StatelessWidget {
         pulse = true;
       case RadioState.playing:
         text = '● EN VIVO';
+      case RadioState.paused:
+        text = 'Pausado';
       case RadioState.error:
         text = 'Error de conexión. Intenta de nuevo.';
       case RadioState.idle:
