@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/radio_provider.dart';
+import '../providers/podcast_provider.dart';
 import '../screens/home_screen.dart';
 import '../screens/podcast_screen.dart';
 import '../screens/programacion_screen.dart';
@@ -30,34 +31,41 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   Widget build(BuildContext context) {
     final radio = context.watch<RadioProvider>();
-    // Mini player is shown on any tab except En Vivo (index 0)
-    final showMini = radio.isActive && _currentIndex != 0;
+    final podcast = context.watch<PodcastProvider>();
+
+    // Mini player shows when podcast is active (any tab)
+    // or when radio is active and user is not on the home tab.
+    final showMini =
+        podcast.isActive || (radio.isActive && _currentIndex != 0);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            // Mini player slides in from top when active
-            MiniPlayer(visible: showMini),
-            // Main content — IndexedStack keeps each screen alive
-            Expanded(
-              child: IndexedStack(
-                index: _currentIndex,
-                children: _tabs,
-              ),
-            ),
-          ],
+        child: IndexedStack(
+          index: _currentIndex,
+          children: _tabs,
         ),
       ),
-      bottomNavigationBar: _BottomNav(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Mini player sits right above the nav bar
+          MiniPlayer(
+            visible: showMini,
+            onNavigateToHome: () => setState(() => _currentIndex = 0),
+          ),
+          _BottomNav(
+            currentIndex: _currentIndex,
+            onTap: (i) => setState(() => _currentIndex = i),
+          ),
+        ],
       ),
     );
   }
 }
+
+// ─── Bottom nav ───────────────────────────────────────────────────────────────
 
 class _BottomNav extends StatelessWidget {
   final int currentIndex;
@@ -78,11 +86,11 @@ class _BottomNav extends StatelessWidget {
           height: 64,
           child: Row(
             children: [
-              _NavItem(icon: _IconLive(), label: 'En Vivo', index: 0, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: _IconMic(), label: 'Podcast', index: 1, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: _IconCalendar(), label: 'Programación', index: 2, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: _IconCompass(), label: 'Explorar', index: 3, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: _IconDots(), label: 'Más', index: 4, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconLive(), label: 'En Vivo', index: 0, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconMic(), label: 'Podcast', index: 1, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconCalendar(), label: 'Programación', index: 2, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconCompass(), label: 'Explorar', index: 3, currentIndex: currentIndex, onTap: onTap),
+              _NavItem(icon: const _IconDots(), label: 'Más', index: 4, currentIndex: currentIndex, onTap: onTap),
             ],
           ),
         ),
@@ -117,7 +125,6 @@ class _NavItem extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           decoration: BoxDecoration(
             color: isActive ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(0),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -146,29 +153,37 @@ class _NavItem extends StatelessWidget {
   }
 }
 
-// ── Icon widgets (SVG-equivalent custom painters replaced with Icon) ──────────
-
 class _IconLive extends StatelessWidget {
+  const _IconLive();
   @override
-  Widget build(BuildContext context) => const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
+  Widget build(BuildContext context) =>
+      const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
 }
 
 class _IconMic extends StatelessWidget {
+  const _IconMic();
   @override
-  Widget build(BuildContext context) => const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
+  Widget build(BuildContext context) =>
+      const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
 }
 
 class _IconCalendar extends StatelessWidget {
+  const _IconCalendar();
   @override
-  Widget build(BuildContext context) => const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
+  Widget build(BuildContext context) =>
+      const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
 }
 
 class _IconCompass extends StatelessWidget {
+  const _IconCompass();
   @override
-  Widget build(BuildContext context) => const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
+  Widget build(BuildContext context) =>
+      const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
 }
 
 class _IconDots extends StatelessWidget {
+  const _IconDots();
   @override
-  Widget build(BuildContext context) => const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
+  Widget build(BuildContext context) =>
+      const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
 }

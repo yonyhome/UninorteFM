@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:provider/provider.dart';
 import '../models/podcast_data.dart';
+import '../providers/podcast_provider.dart';
 import '../theme/app_theme.dart';
 
 class PodcastScreen extends StatefulWidget {
@@ -11,19 +12,20 @@ class PodcastScreen extends StatefulWidget {
 }
 
 class _PodcastScreenState extends State<PodcastScreen> {
-  int _activeShowIndex = 0;
-  // Index of the expanded episode (-1 = none)
-  int _expandedEpisode = -1;
+  // null = "Todos"
+  int? _filterIndex;
 
-  Show get _activeShow => kShows[_activeShowIndex];
+  List<Show> get _visibleShows =>
+      _filterIndex == null ? kShows : [kShows[_filterIndex!]];
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: Row(
             children: [
               Container(
@@ -45,105 +47,47 @@ class _PodcastScreenState extends State<PodcastScreen> {
             ],
           ),
         ),
+        const SizedBox(height: 16),
 
-        // Category pills
+        // Category chips
         SizedBox(
-          height: 48,
-          child: ListView.separated(
+          height: 34,
+          child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: kShows.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (_, i) {
-              final show = kShows[i];
-              final isActive = i == _activeShowIndex;
-              return GestureDetector(
-                onTap: () => setState(() {
-                  _activeShowIndex = i;
-                  _expandedEpisode = -1;
-                }),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: isActive ? show.color : const Color(0xFF1A1A1A),
-                    borderRadius: BorderRadius.circular(24),
-                    border: isActive
-                        ? null
-                        : Border.all(color: const Color(0xFF2A2A2A)),
-                  ),
-                  child: Text(
-                    show.name,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isActive ? Colors.white : Colors.white54,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-
-        const SizedBox(height: 4),
-        const Divider(color: Color(0xFF1A1A1A), height: 1),
-
-        // Show info bar
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Row(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: _activeShow.color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.mic_rounded, color: _activeShow.color, size: 20),
+              _Chip(
+                label: 'Todos',
+                isActive: _filterIndex == null,
+                color: AppColors.primary,
+                onTap: () => setState(() => _filterIndex = null),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _activeShow.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
+              ...List.generate(kShows.length, (i) => Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: _Chip(
+                      label: kShows[i].name,
+                      isActive: _filterIndex == i,
+                      color: kShows[i].color,
+                      onTap: () => setState(() => _filterIndex = i),
                     ),
-                    Text(
-                      '${_activeShow.episodes.length} episodios',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _activeShow.color.withOpacity(0.8),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  )),
             ],
           ),
         ),
 
-        // Episode cards
+        const SizedBox(height: 8),
+
+        // Show carousels
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-            itemCount: _activeShow.episodes.length,
+            padding: const EdgeInsets.only(top: 8, bottom: 120),
+            itemCount: _visibleShows.length,
             itemBuilder: (_, i) {
-              return _EpisodeCard(
-                episode: _activeShow.episodes[i],
-                index: i,
-                showColor: _activeShow.color,
-                isExpanded: _expandedEpisode == i,
-                onTap: () => setState(() {
-                  _expandedEpisode = _expandedEpisode == i ? -1 : i;
-                }),
+              final show = _visibleShows[i];
+              return _ShowSection(
+                // Key ensures cards re-animate when filter changes
+                key: ValueKey('${show.id}-$_filterIndex'),
+                show: show,
               );
             },
           ),
@@ -153,132 +97,297 @@ class _PodcastScreenState extends State<PodcastScreen> {
   }
 }
 
-class _EpisodeCard extends StatefulWidget {
-  final Episode episode;
-  final int index;
-  final Color showColor;
-  final bool isExpanded;
+// ─── Category chip ────────────────────────────────────────────────────────────
+
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool isActive;
+  final Color color;
   final VoidCallback onTap;
 
-  const _EpisodeCard({
-    required this.episode,
-    required this.index,
-    required this.showColor,
-    required this.isExpanded,
+  const _Chip({
+    required this.label,
+    required this.isActive,
+    required this.color,
     required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: isActive ? color : const Color(0xFF161616),
+          borderRadius: BorderRadius.circular(17),
+          border: Border.all(
+            color: isActive ? color : const Color(0xFF2A2A2A),
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: isActive ? Colors.white : Colors.white54,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Show section (header + horizontal carousel) ──────────────────────────────
+
+class _ShowSection extends StatelessWidget {
+  final Show show;
+
+  const _ShowSection({super.key, required this.show});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section header
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+          child: Row(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: show.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  show.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Text(
+                '${show.episodes.length} ep.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: show.color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Episode carousel
+        SizedBox(
+          height: 195,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: show.episodes.length,
+            itemBuilder: (_, i) => Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: _EpisodeCard(
+                show: show,
+                episode: show.episodes[i],
+                episodeIndex: i,
+                delay: Duration(milliseconds: 50 * i.clamp(0, 6)),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+// ─── Episode card ─────────────────────────────────────────────────────────────
+
+class _EpisodeCard extends StatefulWidget {
+  final Show show;
+  final Episode episode;
+  final int episodeIndex;
+  final Duration delay;
+
+  const _EpisodeCard({
+    required this.show,
+    required this.episode,
+    required this.episodeIndex,
+    required this.delay,
   });
 
   @override
   State<_EpisodeCard> createState() => _EpisodeCardState();
 }
 
-class _EpisodeCardState extends State<_EpisodeCard> {
-  WebViewController? _webCtrl;
+class _EpisodeCardState extends State<_EpisodeCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _fade;
+  late final Animation<Offset> _slide;
 
   @override
-  void didUpdateWidget(_EpisodeCard old) {
-    super.didUpdateWidget(old);
-    // Lazy-init the WebView only when first expanded
-    if (widget.isExpanded && _webCtrl == null) {
-      _webCtrl = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(Colors.transparent)
-        ..loadRequest(Uri.parse(widget.episode.embedUrl));
-    }
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 380),
+    );
+    _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.18),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+
+    Future.delayed(widget.delay, () {
+      if (mounted) _ctrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            color: const Color(0xFF0E0E0E),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: widget.showColor.withOpacity(0.16),
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(
+        position: _slide,
+        child: GestureDetector(
+          onTap: () => context
+              .read<PodcastProvider>()
+              .playEpisode(widget.show, widget.episodeIndex),
+          child: _CardBody(
+            show: widget.show,
+            episodeIndex: widget.episodeIndex,
+            title: widget.episode.title,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardBody extends StatelessWidget {
+  final Show show;
+  final int episodeIndex;
+  final String title;
+
+  const _CardBody({
+    required this.show,
+    required this.episodeIndex,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 138,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            show.color.withValues(alpha: 0.85),
+            show.color.withValues(alpha: 0.3),
+            const Color(0xFF080808),
+          ],
+          stops: const [0, 0.45, 1],
+        ),
+      ),
+      child: Stack(
+        clipBehavior: Clip.hardEdge,
+        children: [
+          // Decorative circle (top-right)
+          Positioned(
+            top: -18,
+            right: -18,
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.07),
+              ),
             ),
           ),
-          child: Column(
-            children: [
-              // Card header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
-                child: Row(
-                  children: [
-                    // Number badge
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: widget.showColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${widget.index + 1}',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          color: widget.showColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    // Title
-                    Expanded(
-                      child: Text(
-                        widget.episode.title,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xE6FFFFFF),
-                          height: 1.3,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // Expand indicator
-                    AnimatedRotation(
-                      turns: widget.isExpanded ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: widget.showColor.withOpacity(0.7),
-                        size: 20,
-                      ),
-                    ),
+          // EP badge
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.45),
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Text(
+                'EP ${episodeIndex + 1}',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white.withValues(alpha: 0.85),
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ),
+          ),
+          // Mic icon (center)
+          const Positioned.fill(
+            child: Center(
+              child: Icon(Icons.mic_rounded, color: Colors.white38, size: 42),
+            ),
+          ),
+          // Bottom gradient + title
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10, 24, 10, 11),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(16),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.82),
                   ],
                 ),
               ),
-              // Spotify embed (lazy loaded)
-              AnimatedCrossFade(
-                duration: const Duration(milliseconds: 250),
-                crossFadeState: widget.isExpanded
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                firstChild: const SizedBox.shrink(),
-                secondChild: _webCtrl != null
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(14),
-                        ),
-                        child: SizedBox(
-                          height: 152,
-                          child: WebViewWidget(controller: _webCtrl!),
-                        ),
-                      )
-                    : const SizedBox(height: 152),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 1.3,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
