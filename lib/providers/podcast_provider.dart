@@ -7,6 +7,7 @@ enum PodcastState { idle, loading, playing, paused }
 
 class PodcastProvider extends ChangeNotifier {
   PodcastState _state = PodcastState.idle;
+  bool _isExpanded = false;
   Show? _show;
   int _episodeIndex = 0;
   Duration _position = Duration.zero;
@@ -35,6 +36,7 @@ class PodcastProvider extends ChangeNotifier {
   bool get isPlaying => _state == PodcastState.playing;
   bool get isPaused => _state == PodcastState.paused;
   bool get isLoading => _state == PodcastState.loading;
+  bool get isExpanded => _isExpanded;
   bool get hasPrevious => _episodeIndex > 0;
   bool get hasNext =>
       _show != null && _episodeIndex < _show!.episodes.length - 1;
@@ -89,11 +91,11 @@ class PodcastProvider extends ChangeNotifier {
     _position = Duration.zero;
     _duration = Duration.zero;
     _state = PodcastState.loading;
+    _isExpanded = true; // auto-expand when a new episode starts
     notifyListeners();
 
     final embedUrl = show.episodes[index].embedUrl;
-    
-    // Extract episode ID
+
     String episodeId = '';
     try {
       final uri = Uri.parse(embedUrl);
@@ -101,9 +103,7 @@ class PodcastProvider extends ChangeNotifier {
       if (episodeId == 'video') {
         episodeId = uri.pathSegments[uri.pathSegments.length - 2];
       }
-    } catch (e) {
-      episodeId = '';
-    }
+    } catch (_) {}
 
     final html = '''
     <!DOCTYPE html>
@@ -118,11 +118,7 @@ class PodcastProvider extends ChangeNotifier {
       <script>
         window.onSpotifyIframeApiReady = (IFrameAPI) => {
           const element = document.getElementById('embed-iframe');
-          const options = {
-              width: '100%',
-              height: '100%',
-              uri: 'spotify:episode:$episodeId'
-          };
+          const options = { width: '100%', height: '100%', uri: 'spotify:episode:$episodeId' };
           const callback = (EmbedController) => {
             window.spotifyCtrl = EmbedController;
             EmbedController.addListener('playback_update', e => {
@@ -132,15 +128,12 @@ class PodcastProvider extends ChangeNotifier {
                 paused: e.data.isPaused
               }));
             });
-            EmbedController.addListener('ready', () => {
-              EmbedController.play();
-            });
+            EmbedController.addListener('ready', () => { EmbedController.play(); });
           };
           IFrameAPI.createController(element, options, callback);
         };
-        function playPodcast() { window.spotifyCtrl && window.spotifyCtrl.play(); }
+        function playPodcast()  { window.spotifyCtrl && window.spotifyCtrl.play(); }
         function pausePodcast() { window.spotifyCtrl && window.spotifyCtrl.pause(); }
-        function togglePodcast() { window.spotifyCtrl && window.spotifyCtrl.togglePlay(); }
       </script>
     </body>
     </html>
@@ -149,12 +142,23 @@ class PodcastProvider extends ChangeNotifier {
     await _webCtrl.loadHtmlString(html);
   }
 
+  void expand() {
+    if (!isActive) return;
+    _isExpanded = true;
+    notifyListeners();
+  }
+
+  void collapse() {
+    _isExpanded = false;
+    notifyListeners();
+  }
+
   Future<void> pause() async {
-    await _webCtrl.runJavaScript("pausePodcast()");
+    await _webCtrl.runJavaScript('pausePodcast()');
   }
 
   Future<void> resume() async {
-    await _webCtrl.runJavaScript("playPodcast()");
+    await _webCtrl.runJavaScript('playPodcast()');
   }
 
   void togglePlayPause() {
@@ -177,6 +181,7 @@ class PodcastProvider extends ChangeNotifier {
     _webCtrl.loadRequest(Uri.parse('about:blank'));
     _show = null;
     _state = PodcastState.idle;
+    _isExpanded = false;
     _position = Duration.zero;
     _duration = Duration.zero;
     notifyListeners();

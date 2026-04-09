@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../providers/radio_provider.dart';
 import '../providers/podcast_provider.dart';
 import '../screens/home_screen.dart';
@@ -9,6 +8,7 @@ import '../screens/programacion_screen.dart';
 import '../screens/explorar_screen.dart';
 import '../screens/mas_screen.dart';
 import 'mini_player.dart';
+import 'podcast_panel.dart';
 import '../theme/app_theme.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -57,48 +57,49 @@ class _MainScaffoldState extends State<MainScaffold> {
     final radio = context.watch<RadioProvider>();
     final podcast = context.watch<PodcastProvider>();
 
-    // Mini player shows when podcast is active OR radio is active outside Home.
-    final showMini =
-        podcast.isActive || (radio.isActive && _currentIndex != 0);
+    final showRadioMini =
+        radio.isActive && (_currentIndex != 0 || podcast.isActive);
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      // Everything lives in body so the podcast panel (AnimatedPositioned)
+      // can slide over the bottom nav and mini players.
       body: Stack(
         children: [
-          // ── Hidden podcast WebView (always in tree so audio never stops) ──
-          // 1×1 keeps the PlatformView initialized; Offstage would destroy it.
-          Positioned(
-            left: 0,
-            top: 0,
-            child: SizedBox(
-              width: 1,
-              height: 1,
-              child: WebViewWidget(
-                controller: context.read<PodcastProvider>().webController,
+          // ── Main layout ──────────────────────────────────────────────────────
+          Column(
+            children: [
+              // Page content
+              Expanded(
+                child: SafeArea(
+                  bottom: false,
+                  child: PageView.builder(
+                    controller: _pageCtrl,
+                    itemCount: _tabs.length,
+                    onPageChanged: (i) =>
+                        setState(() => _currentIndex = i),
+                    itemBuilder: (_, i) => _KeepAlive(child: _tabs[i]),
+                  ),
+                ),
               ),
-            ),
+
+              // Radio mini player
+              MiniPlayer(
+                visible: showRadioMini,
+                onNavigateToHome: () => _goTo(0),
+              ),
+
+              // Podcast mini bar (collapses to 0 when expanded or idle)
+              const PodcastMiniBar(),
+
+              // Bottom nav
+              _BottomNav(currentIndex: _currentIndex, onTap: _goTo),
+            ],
           ),
 
-          // ── Main page content ──
-          SafeArea(
-            bottom: false,
-            child: PageView.builder(
-              controller: _pageCtrl,
-              itemCount: _tabs.length,
-              onPageChanged: (i) => setState(() => _currentIndex = i),
-              itemBuilder: (_, i) => _KeepAlive(child: _tabs[i]),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MiniPlayer(
-            visible: showMini,
-            onNavigateToHome: () => _goTo(0),
-          ),
-          _BottomNav(currentIndex: _currentIndex, onTap: _goTo),
+          // ── Podcast panel ────────────────────────────────────────────────────
+          // AnimatedPositioned off-screen when collapsed; WebView stays alive.
+          const PodcastExpandedPanel(),
         ],
       ),
     );
@@ -148,11 +149,36 @@ class _BottomNav extends StatelessWidget {
           height: 64,
           child: Row(
             children: [
-              _NavItem(icon: const _IconLive(), label: 'En Vivo', index: 0, current: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconMic(), label: 'Podcast', index: 1, current: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconCalendar(), label: 'Programación', index: 2, current: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconCompass(), label: 'Explorar', index: 3, current: currentIndex, onTap: onTap),
-              _NavItem(icon: const _IconDots(), label: 'Más', index: 4, current: currentIndex, onTap: onTap),
+              _NavItem(
+                  icon: const _IconLive(),
+                  label: 'En Vivo',
+                  index: 0,
+                  current: currentIndex,
+                  onTap: onTap),
+              _NavItem(
+                  icon: const _IconMic(),
+                  label: 'Podcast',
+                  index: 1,
+                  current: currentIndex,
+                  onTap: onTap),
+              _NavItem(
+                  icon: const _IconCalendar(),
+                  label: 'Programación',
+                  index: 2,
+                  current: currentIndex,
+                  onTap: onTap),
+              _NavItem(
+                  icon: const _IconCompass(),
+                  label: 'Explorar',
+                  index: 3,
+                  current: currentIndex,
+                  onTap: onTap),
+              _NavItem(
+                  icon: const _IconDots(),
+                  label: 'Más',
+                  index: 4,
+                  current: currentIndex,
+                  onTap: onTap),
             ],
           ),
         ),
@@ -216,29 +242,34 @@ class _NavItem extends StatelessWidget {
 class _IconLive extends StatelessWidget {
   const _IconLive();
   @override
-  Widget build(_) => const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
+  Widget build(_) =>
+      const Icon(Icons.radio_rounded, color: Colors.white, size: 22);
 }
 
 class _IconMic extends StatelessWidget {
   const _IconMic();
   @override
-  Widget build(_) => const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
+  Widget build(_) =>
+      const Icon(Icons.mic_rounded, color: Colors.white, size: 22);
 }
 
 class _IconCalendar extends StatelessWidget {
   const _IconCalendar();
   @override
-  Widget build(_) => const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
+  Widget build(_) =>
+      const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 20);
 }
 
 class _IconCompass extends StatelessWidget {
   const _IconCompass();
   @override
-  Widget build(_) => const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
+  Widget build(_) =>
+      const Icon(Icons.explore_rounded, color: Colors.white, size: 22);
 }
 
 class _IconDots extends StatelessWidget {
   const _IconDots();
   @override
-  Widget build(_) => const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
+  Widget build(_) =>
+      const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 22);
 }
