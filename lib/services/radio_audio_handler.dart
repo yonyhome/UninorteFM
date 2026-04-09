@@ -1,9 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 
-// HTTP: the server's TLS cert is not in Android's trust store, and both
-// platforms already have cleartext traffic permitted for this domain.
-const _streamUrl = 'http://cactus2.uninorte.edu.co/;stream.mp3';
+// The CA certificate for this host is bundled in
+// android/app/src/main/res/raw/uninorte_ca.crt and trusted via
+// android/app/src/main/res/xml/network_security_config.xml.
+const _streamUrl = 'https://cactus2.uninorte.edu.co/;stream.mp3';
 
 class RadioAudioHandler extends BaseAudioHandler {
   final AudioPlayer _player = AudioPlayer();
@@ -16,9 +17,6 @@ class RadioAudioHandler extends BaseAudioHandler {
       album: 'Mueve la Cultura',
     ));
 
-    // Bridge just_audio events → audio_service playback state.
-    // handleError swallows stream-level errors (e.g. ExoPlayer source errors)
-    // so they don't become unhandled exceptions that crash the app.
     _player.playbackEventStream
         .handleError((_, __) {})
         .map(_transformEvent)
@@ -29,13 +27,11 @@ class RadioAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
-    // Load the stream URL directly. Streams don't need cache-busting, 
-    // and appending query parameters to Shoutcast URLs can cause 404/400 errors.
     await _player.setAudioSource(
       AudioSource.uri(
         Uri.parse(_streamUrl),
         tag: mediaItem.value,
-      )
+      ),
     );
     await _player.play();
   }
