@@ -51,13 +51,15 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>cactus2.uninorte.edu.co</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<false/>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
