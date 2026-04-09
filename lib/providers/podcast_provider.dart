@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../models/podcast_data.dart';
@@ -105,6 +106,9 @@ class PodcastProvider extends ChangeNotifier {
       }
     } catch (_) {}
 
+    // On iOS, WebKit blocks autoplay — the user must tap play first.
+    final noAutoplay = Platform.isIOS;
+
     final html = '''
     <!DOCTYPE html>
     <html>
@@ -116,6 +120,7 @@ class PodcastProvider extends ChangeNotifier {
       <div id="embed-iframe"></div>
       <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
       <script>
+        const _noAutoplay = $noAutoplay;
         window.onSpotifyIframeApiReady = (IFrameAPI) => {
           const element = document.getElementById('embed-iframe');
           const options = { width: '100%', height: '100%', uri: 'spotify:episode:$episodeId' };
@@ -128,12 +133,15 @@ class PodcastProvider extends ChangeNotifier {
                 paused: e.data.isPaused
               }));
             });
-            EmbedController.addListener('ready', () => { EmbedController.play(); });
+            EmbedController.addListener('ready', () => {
+              if (!_noAutoplay) EmbedController.play();
+            });
           };
           IFrameAPI.createController(element, options, callback);
         };
-        function playPodcast()  { window.spotifyCtrl && window.spotifyCtrl.play(); }
-        function pausePodcast() { window.spotifyCtrl && window.spotifyCtrl.pause(); }
+        // resume() continues from current position; play() restarts from 0.
+        function resumePodcast() { window.spotifyCtrl && window.spotifyCtrl.resume(); }
+        function pausePodcast()  { window.spotifyCtrl && window.spotifyCtrl.pause(); }
       </script>
     </body>
     </html>
@@ -158,7 +166,7 @@ class PodcastProvider extends ChangeNotifier {
   }
 
   Future<void> resume() async {
-    await _webCtrl.runJavaScript('playPodcast()');
+    await _webCtrl.runJavaScript('resumePodcast()');
   }
 
   void togglePlayPause() {
