@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/radio_provider.dart';
+import '../providers/schedule_provider.dart';
 import '../theme/app_theme.dart';
 
 // Mini player shown only for the live radio stream.
@@ -125,7 +126,8 @@ class _RadioBar extends StatelessWidget {
                     Text(
                       radio.isLoading
                           ? 'Conectando...'
-                          : 'Uninorte 103.1 FM Estéreo',
+                          : (context.watch<ScheduleProvider>().current?.name
+                              ?? 'Uninorte 103.1 FM Estéreo'),
                       style: const TextStyle(
                         fontSize: 11,
                         color: Colors.white60,

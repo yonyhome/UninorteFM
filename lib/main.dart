@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'services/radio_audio_handler.dart';
 import 'providers/radio_provider.dart';
 import 'providers/podcast_provider.dart';
+import 'providers/schedule_provider.dart';
 import 'app.dart';
 
 Future<void> main() async {
@@ -41,6 +42,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => RadioProvider(audioHandler)),
         ChangeNotifierProvider(create: (_) => PodcastProvider()),
+        ChangeNotifierProvider(create: (_) => ScheduleProvider()),
       ],
       child: const UninorteFMApp(),
     ),

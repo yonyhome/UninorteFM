@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/radio_provider.dart';
 import '../providers/podcast_provider.dart';
+import '../providers/schedule_provider.dart';
 import '../widgets/audio_visualizer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -111,6 +112,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   height: 24,
                   child: _StatusText(state: radio.state),
                 ),
+                const SizedBox(height: 12),
+                // Current program metadata
+                _NowPlaying(isRadioActive: radio.isPlaying || radio.isLoading),
                 const Spacer(),
                 // Slogan
                 Padding(
@@ -375,6 +379,71 @@ class _StatusText extends StatelessWidget {
           letterSpacing: 2,
         ),
       ),
+    );
+  }
+}
+
+// ─── Now playing metadata ─────────────────────────────────────────────────────
+
+class _NowPlaying extends StatelessWidget {
+  final bool isRadioActive;
+  const _NowPlaying({required this.isRadioActive});
+
+  @override
+  Widget build(BuildContext context) {
+    final program = context.watch<ScheduleProvider>().current;
+    final visible = isRadioActive && program != null;
+
+    return AnimatedOpacity(
+      opacity: visible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 500),
+      child: program == null
+          ? const SizedBox(height: 28)
+          : Container(
+              height: 28,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.12),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6, height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: program.color,
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    program.name,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    width: 1, height: 10,
+                    margin: const EdgeInsets.symmetric(horizontal: 7),
+                    color: Colors.white.withValues(alpha: 0.25),
+                  ),
+                  Text(
+                    program.category,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: program.color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
