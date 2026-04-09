@@ -279,8 +279,9 @@ class _Info extends StatelessWidget {
     final String? timeText =
         isPodcast && podcast.remainingText.isNotEmpty ? podcast.remainingText : null;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Center(
+      child: Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -320,6 +321,7 @@ class _Info extends StatelessWidget {
           ],
         ),
       ],
+      ),
     );
   }
 }

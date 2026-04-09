@@ -1,8 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 
-// Use HTTPS since the server supports it
-const _streamUrl = 'https://cactus2.uninorte.edu.co/;stream.mp3';
+// HTTP: the server's TLS cert is not in Android's trust store, and both
+// platforms already have cleartext traffic permitted for this domain.
+const _streamUrl = 'http://cactus2.uninorte.edu.co/;stream.mp3';
 
 class RadioAudioHandler extends BaseAudioHandler {
   final AudioPlayer _player = AudioPlayer();
