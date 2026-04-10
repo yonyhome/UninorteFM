@@ -63,18 +63,15 @@ class PodcastScreen extends StatelessWidget {
           ),
         ),
 
-        // ── Grid ────────────────────────────────────────────────────────────
+        // ── Lista de shows (una por fila) ────────────────────────────────────
         Expanded(
-          child: GridView.builder(
+          child: ListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.78,
-            ),
             itemCount: kShows.length,
-            itemBuilder: (_, i) => _ShowCard(show: kShows[i]),
+            itemBuilder: (_, i) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _ShowCard(show: kShows[i]),
+            ),
           ),
         ),
       ],
@@ -150,15 +147,24 @@ class _ShowCardState extends State<_ShowCard>
       child: ScaleTransition(
         scale: _scale,
         child: Container(
+          height: 110,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
             color: const Color(0xFF111111),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.06),
+            ),
           ),
           clipBehavior: Clip.hardEdge,
-          child: Stack(
+          child: Row(
             children: [
-              // Imagen de fondo — portada del primer episodio
-              Positioned.fill(
+              // Barra de color izquierda
+              Container(width: 4, color: show.color),
+
+              // Thumbnail cuadrado
+              SizedBox(
+                width: 110,
+                height: 110,
                 child: FutureBuilder<String?>(
                   future: CoverArtService.forShow(
                     show.id,
@@ -168,186 +174,97 @@ class _ShowCardState extends State<_ShowCard>
                     final url = snap.data;
                     if (url == null) {
                       return Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              show.color.withValues(alpha: 0.7),
-                              show.color.withValues(alpha: 0.15),
-                            ],
-                          ),
-                        ),
+                        color: show.color.withValues(alpha: 0.18),
+                        child: Icon(Icons.mic_rounded,
+                            color: show.color, size: 32),
                       );
                     }
-                    return AnimatedOpacity(
-                      opacity: 1,
-                      duration: const Duration(milliseconds: 400),
-                      child: Image.network(
-                        url,
-                        fit: BoxFit.cover,
-                        frameBuilder: (_, child, frame, wasSync) => wasSync
-                            ? child
-                            : AnimatedOpacity(
-                                opacity: frame == null ? 0 : 1,
-                                duration: const Duration(milliseconds: 400),
-                                child: child,
-                              ),
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    return Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                      frameBuilder: (_, child, frame, wasSync) => wasSync
+                          ? child
+                          : AnimatedOpacity(
+                              opacity: frame == null ? 0 : 1,
+                              duration: const Duration(milliseconds: 350),
+                              child: child,
+                            ),
+                      errorBuilder: (_, __, ___) => Container(
+                        color: show.color.withValues(alpha: 0.18),
+                        child: Icon(Icons.mic_rounded,
+                            color: show.color, size: 32),
                       ),
                     );
                   },
                 ),
               ),
 
-              // Overlay oscuro gradiente
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.15),
-                        Colors.black.withValues(alpha: 0.75),
-                        Colors.black.withValues(alpha: 0.95),
-                      ],
-                      stops: const [0.0, 0.55, 1.0],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Borde de color del show (top)
-              Positioned(
-                top: 0, left: 0, right: 0,
-                child: Container(
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: show.color,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(18),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Chip de episodios (top-right)
-              Positioned(
-                top: 12, right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: show.color.withValues(alpha: 0.5),
-                      width: 1,
-                    ),
-                  ),
-                  child: Text(
-                    '${show.episodes.length} ep',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: show.color,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ),
-              ),
-
-              // Contenido inferior
-              Positioned(
-                left: 0, right: 0, bottom: 0,
+              // Info
+              Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Punto de color + nombre
-                      Row(
-                        children: [
-                          Container(
-                            width: 7, height: 7,
-                            decoration: BoxDecoration(
-                              color: show.color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              show.name,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                height: 1.2,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        show.name,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 6),
-
-                      // Descripción
+                      const SizedBox(height: 5),
                       if (show.description.isNotEmpty)
                         Text(
                           show.description,
                           style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.55),
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.5),
                             height: 1.35,
-                            fontWeight: FontWeight.w500,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      const SizedBox(height: 10),
-
-                      // Botón "Ver episodios"
+                      const Spacer(),
                       Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: show.color.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(8),
+                              color: show.color.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: show.color.withValues(alpha: 0.5),
-                              ),
+                                  color: show.color.withValues(alpha: 0.35)),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.play_arrow_rounded,
-                                  color: show.color,
-                                  size: 13,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Ver episodios',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: show.color,
-                                  ),
-                                ),
-                              ],
+                            child: Text(
+                              '${show.episodes.length} episodios',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: show.color,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
+                ),
+              ),
+
+              // Flecha derecha
+              Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white.withValues(alpha: 0.25),
+                  size: 22,
                 ),
               ),
             ],
@@ -628,9 +545,15 @@ class _EpisodeRow extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context.read<RadioProvider>().stop();
-        context.read<PodcastProvider>().playEpisode(show, index);
-        Navigator.of(context).pop(); // volver a la pantalla principal
+        final podcastProv = context.read<PodcastProvider>();
+        if (isCurrent) {
+          // Episodio ya cargado — solo toggle play/pause, sin reiniciar
+          podcastProv.togglePlayPause();
+        } else {
+          context.read<RadioProvider>().stop();
+          podcastProv.playEpisode(show, index);
+          Navigator.of(context).pop();
+        }
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
@@ -742,11 +665,13 @@ class _EpisodeRow extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // Botón play / animación playing
+              // Botón play / pause
               _EpisodePlayBtn(
                 accent: accent,
                 isPlaying: isPlaying,
                 isCurrent: isCurrent,
+                show: show,
+                index: index,
               ),
             ],
           ),
@@ -762,36 +687,53 @@ class _EpisodePlayBtn extends StatelessWidget {
   final Color accent;
   final bool  isPlaying;
   final bool  isCurrent;
+  final Show  show;
+  final int   index;
 
   const _EpisodePlayBtn({
     required this.accent,
     required this.isPlaying,
     required this.isCurrent,
+    required this.show,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 36, height: 36,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isCurrent
-            ? accent
-            : accent.withValues(alpha: 0.15),
-        boxShadow: isCurrent
-            ? [BoxShadow(
-                color: accent.withValues(alpha: 0.35),
-                blurRadius: 10,
-                spreadRadius: 1,
-              )]
-            : null,
-      ),
-      child: Icon(
-        isPlaying
-            ? Icons.pause_rounded
-            : Icons.play_arrow_rounded,
-        color: isCurrent ? Colors.white : accent,
-        size: 20,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        final podcastProv = context.read<PodcastProvider>();
+        if (isCurrent) {
+          podcastProv.togglePlayPause();
+        } else {
+          context.read<RadioProvider>().stop();
+          podcastProv.playEpisode(show, index);
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        width: 40, height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isCurrent
+              ? accent
+              : accent.withValues(alpha: 0.15),
+          boxShadow: isCurrent
+              ? [BoxShadow(
+                  color: accent.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  spreadRadius: 1,
+                )]
+              : null,
+        ),
+        child: Icon(
+          isPlaying
+              ? Icons.pause_rounded
+              : Icons.play_arrow_rounded,
+          color: isCurrent ? Colors.white : accent,
+          size: 22,
+        ),
       ),
     );
   }
