@@ -3,16 +3,23 @@ import 'package:flutter/material.dart';
 class Episode {
   final String title;
   final String embedUrl;
+  /// Optional short description shown en la pantalla de detalle.
+  final String description;
 
-  const Episode({required this.title, required this.embedUrl});
+  const Episode({
+    required this.title,
+    required this.embedUrl,
+    this.description = '',
+  });
 }
 
 class Show {
   final String id;
   final String name;
   final Color color;
-  /// Direct Spotify CDN cover art URL. Empty string → gradient fallback.
   final String coverUrl;
+  /// Descripción corta del show, usada en la tarjeta de categoría.
+  final String description;
   final List<Episode> episodes;
 
   const Show({
@@ -20,6 +27,7 @@ class Show {
     required this.name,
     required this.color,
     this.coverUrl = '',
+    this.description = '',
     required this.episodes,
   });
 }
@@ -30,6 +38,7 @@ const kShows = [
     name: 'Azul Celeste',
     color: Color(0xFF0EA5E9),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
+    description: 'Poesía y literatura narrada, un viaje entre palabras y emociones.',
     episodes: [
       Episode(title: 'Soneto 29', embedUrl: 'https://open.spotify.com/embed/episode/5mnkdwqeW5BDnSykDOn4KW?utm_source=generator'),
       Episode(title: 'Yo no quiero más luz que tu cuerpo frente al mío', embedUrl: 'https://open.spotify.com/embed/episode/0dOd5QLoaHuNZEbeTusP5S?utm_source=generator'),
@@ -54,6 +63,7 @@ const kShows = [
     name: 'La Historia Continúa',
     color: Color(0xFF8B5CF6),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a3c2e5a87e2f7f8e5b6c3e1d2',
+    description: 'Análisis histórico y debates sobre los grandes temas de nuestra época.',
     episodes: [
       Episode(title: 'Justicia climática y medio ambiente. Parte II', embedUrl: 'https://open.spotify.com/embed/episode/0Tkubgw6UTkRrU4mMfEkWb?utm_source=generator'),
       Episode(title: 'Justicia climática y medio ambiente. Parte I', embedUrl: 'https://open.spotify.com/embed/episode/2aECzlGmMv77qRWmuEszDr?utm_source=generator'),
@@ -73,6 +83,7 @@ const kShows = [
     name: 'Todos Cuentan',
     color: Color(0xFFF59E0B),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8af4a2b5e8c1d9e7a6b5c4d3e2',
+    description: 'Derecho, sociedad y ciudadanía desde una perspectiva accesible.',
     episodes: [
       Episode(title: 'La situación de los derechos humanos en Colombia', embedUrl: 'https://open.spotify.com/embed/episode/2tnQBuLoa4pObiVjRv8eMn?utm_source=generator'),
       Episode(title: 'El derecho de la competencia. Parte II', embedUrl: 'https://open.spotify.com/embed/episode/74G4FUhp4LmSr1q5E4BlGM?utm_source=generator'),
@@ -91,26 +102,27 @@ const kShows = [
     name: 'Salud Uninorte Radio',
     color: Color(0xFF10B981),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a2d4e7f9c3b1a5e8d6c7b4a9f',
+    description: 'Salud, bienestar y ciencia médica explicados por expertos de Uninorte.',
     episodes: [
-      Episode(title: 'EP 19', embedUrl: 'https://open.spotify.com/embed/episode/1COAsJ7jc0hQS8H7uUsnJb?utm_source=generator'),
-      Episode(title: 'EP 18', embedUrl: 'https://open.spotify.com/embed/episode/7p5AzSYnZOZmqmfC7suQPT?utm_source=generator'),
-      Episode(title: 'EP 17', embedUrl: 'https://open.spotify.com/embed/episode/0rGEb7as6096zKkjlcE8tw?utm_source=generator'),
-      Episode(title: 'EP 16', embedUrl: 'https://open.spotify.com/embed/episode/6wiBkcXqmgawHkcxL2OEcg?utm_source=generator'),
-      Episode(title: 'EP 15', embedUrl: 'https://open.spotify.com/embed/episode/6SwDxx7v4nQYoKN1nk3hRt?utm_source=generator'),
-      Episode(title: 'EP 14', embedUrl: 'https://open.spotify.com/embed/episode/2xZD28ScgcEHDtiMtJoGVO?utm_source=generator'),
-      Episode(title: 'EP 13', embedUrl: 'https://open.spotify.com/embed/episode/1YEqzFNHZ1IRJUwIkXAfE6?utm_source=generator'),
-      Episode(title: 'EP 12', embedUrl: 'https://open.spotify.com/embed/episode/3d9Jpz8sV62SGC0evUP01u?utm_source=generator'),
-      Episode(title: 'EP 11', embedUrl: 'https://open.spotify.com/embed/episode/66sQPeYrjkFsrohP9vDldT?utm_source=generator'),
-      Episode(title: 'EP 10', embedUrl: 'https://open.spotify.com/embed/episode/0pyzbqgyhNKNNMZVEAWS5J?utm_source=generator'),
-      Episode(title: 'EP 9', embedUrl: 'https://open.spotify.com/embed/episode/6HJFTXdqxEQF8iz1ibsbJy?utm_source=generator'),
-      Episode(title: 'EP 8', embedUrl: 'https://open.spotify.com/embed/episode/2HBfNTwT80xjEbGZWbxlN8?utm_source=generator'),
-      Episode(title: 'EP 7', embedUrl: 'https://open.spotify.com/embed/episode/2DpWSLQJDLYq0UV60VQRcS?utm_source=generator'),
-      Episode(title: 'EP 6', embedUrl: 'https://open.spotify.com/embed/episode/4TnqOoBoQDyornEGfPEoGt?utm_source=generator'),
-      Episode(title: 'EP 5', embedUrl: 'https://open.spotify.com/embed/episode/7N1pCsmsQWjv76moMFfOeG?utm_source=generator'),
-      Episode(title: 'EP 4', embedUrl: 'https://open.spotify.com/embed/episode/3N0UV7NMbr06g5IegTZCYj?utm_source=generator'),
-      Episode(title: 'EP 3', embedUrl: 'https://open.spotify.com/embed/episode/3tCeZFK6LIXYh9jpS0Ogvj?utm_source=generator'),
-      Episode(title: 'EP 2', embedUrl: 'https://open.spotify.com/embed/episode/5JijBAarotsXQx2APRXbRk?utm_source=generator'),
-      Episode(title: 'EP 1', embedUrl: 'https://open.spotify.com/embed/episode/1ZgHS8SQEUxmQsVOjbGfAQ?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 19', embedUrl: 'https://open.spotify.com/embed/episode/1COAsJ7jc0hQS8H7uUsnJb?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 18', embedUrl: 'https://open.spotify.com/embed/episode/7p5AzSYnZOZmqmfC7suQPT?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 17', embedUrl: 'https://open.spotify.com/embed/episode/0rGEb7as6096zKkjlcE8tw?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 16', embedUrl: 'https://open.spotify.com/embed/episode/6wiBkcXqmgawHkcxL2OEcg?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 15', embedUrl: 'https://open.spotify.com/embed/episode/6SwDxx7v4nQYoKN1nk3hRt?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 14', embedUrl: 'https://open.spotify.com/embed/episode/2xZD28ScgcEHDtiMtJoGVO?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 13', embedUrl: 'https://open.spotify.com/embed/episode/1YEqzFNHZ1IRJUwIkXAfE6?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 12', embedUrl: 'https://open.spotify.com/embed/episode/3d9Jpz8sV62SGC0evUP01u?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 11', embedUrl: 'https://open.spotify.com/embed/episode/66sQPeYrjkFsrohP9vDldT?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 10', embedUrl: 'https://open.spotify.com/embed/episode/0pyzbqgyhNKNNMZVEAWS5J?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 9',  embedUrl: 'https://open.spotify.com/embed/episode/6HJFTXdqxEQF8iz1ibsbJy?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 8',  embedUrl: 'https://open.spotify.com/embed/episode/2HBfNTwT80xjEbGZWbxlN8?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 7',  embedUrl: 'https://open.spotify.com/embed/episode/2DpWSLQJDLYq0UV60VQRcS?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 6',  embedUrl: 'https://open.spotify.com/embed/episode/4TnqOoBoQDyornEGfPEoGt?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 5',  embedUrl: 'https://open.spotify.com/embed/episode/7N1pCsmsQWjv76moMFfOeG?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 4',  embedUrl: 'https://open.spotify.com/embed/episode/3N0UV7NMbr06g5IegTZCYj?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 3',  embedUrl: 'https://open.spotify.com/embed/episode/3tCeZFK6LIXYh9jpS0Ogvj?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 2',  embedUrl: 'https://open.spotify.com/embed/episode/5JijBAarotsXQx2APRXbRk?utm_source=generator'),
+      Episode(title: 'Salud Uninorte Radio — EP 1',  embedUrl: 'https://open.spotify.com/embed/episode/1ZgHS8SQEUxmQsVOjbGfAQ?utm_source=generator'),
     ],
   ),
   Show(
@@ -118,6 +130,7 @@ const kShows = [
     name: 'Así Me Decidí',
     color: Color(0xFFEC4899),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a8f3c2e1a7b5d4c6e9f2a1b0c',
+    description: 'Estudiantes cuentan cómo eligieron su carrera en Uninorte.',
     episodes: [
       Episode(title: 'Ingeniería Mecánica', embedUrl: 'https://open.spotify.com/embed/episode/1W4B9z7f88al2ghrzHEvYm/video?utm_source=generator'),
       Episode(title: 'Economía', embedUrl: 'https://open.spotify.com/embed/episode/0Xt7D8EpOts84BBxNgV5xq/video?utm_source=generator'),
@@ -132,13 +145,14 @@ const kShows = [
     name: 'Diálogos Samario',
     color: Color(0xFFD42020),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a1a3b5c7e9d2f4a6b8c0e1f3a',
+    description: 'Conversaciones con líderes y personalidades del Caribe colombiano.',
     episodes: [
-      Episode(title: 'Diálogo Samario con Oriol Márquez, gerente del hotel Hilton', embedUrl: 'https://open.spotify.com/embed/episode/5XlOnhe6PVrsnaXdYvCTOC/video?utm_source=generator'),
-      Episode(title: 'Diálogo Samario con Patricia Apreza', embedUrl: 'https://open.spotify.com/embed/episode/1zf7LziKqFIugPHsBJysHc/video?utm_source=generator'),
-      Episode(title: 'Diálogo Samario con Carolina Torrado', embedUrl: 'https://open.spotify.com/embed/episode/7LZo10njmXoeiuswr6JJFJ/video?utm_source=generator'),
-      Episode(title: 'Diálogo Samario con Silvia Media', embedUrl: 'https://open.spotify.com/embed/episode/1P4P5lj1CrKnYTYJjfOTds/video?utm_source=generator'),
-      Episode(title: 'Diálogo Samario con Claudia Cuello', embedUrl: 'https://open.spotify.com/embed/episode/31TuRRGeKypmcDTUNjSlAD/video?utm_source=generator'),
-      Episode(title: 'Diálogo Samario con Mayorie Barón', embedUrl: 'https://open.spotify.com/embed/episode/1uRSz6t1tPk32OYLOb9szU/video?utm_source=generator'),
+      Episode(title: 'Oriol Márquez, gerente del hotel Hilton', embedUrl: 'https://open.spotify.com/embed/episode/5XlOnhe6PVrsnaXdYvCTOC/video?utm_source=generator'),
+      Episode(title: 'Patricia Apreza', embedUrl: 'https://open.spotify.com/embed/episode/1zf7LziKqFIugPHsBJysHc/video?utm_source=generator'),
+      Episode(title: 'Carolina Torrado', embedUrl: 'https://open.spotify.com/embed/episode/7LZo10njmXoeiuswr6JJFJ/video?utm_source=generator'),
+      Episode(title: 'Silvia Media', embedUrl: 'https://open.spotify.com/embed/episode/1P4P5lj1CrKnYTYJjfOTds/video?utm_source=generator'),
+      Episode(title: 'Claudia Cuello', embedUrl: 'https://open.spotify.com/embed/episode/31TuRRGeKypmcDTUNjSlAD/video?utm_source=generator'),
+      Episode(title: 'Mayorie Barón', embedUrl: 'https://open.spotify.com/embed/episode/1uRSz6t1tPk32OYLOb9szU/video?utm_source=generator'),
     ],
   ),
   Show(
@@ -146,6 +160,7 @@ const kShows = [
     name: 'Emprende+',
     color: Color(0xFFF97316),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a5e7f2c4a9b3d1e6f8a0c2b4d',
+    description: 'Innovación, emprendimiento social y economía circular en acción.',
     episodes: [
       Episode(title: 'Del prototipo al plato', embedUrl: 'https://open.spotify.com/embed/episode/5594R9plZ5kZ8DIt6yRomS?utm_source=generator'),
       Episode(title: 'Comunidad y bienes como motor emprendedor', embedUrl: 'https://open.spotify.com/embed/episode/001iMVTIECQnVnmBlTDKah?utm_source=generator'),
@@ -160,6 +175,7 @@ const kShows = [
     name: 'Tardeando',
     color: Color(0xFF6366F1),
     coverUrl: 'https://i.scdn.co/image/ab6765630000ba8a9c1e3f5b7d2a4c6e8f0a1b2d',
+    description: 'Cultura, ideas y conversaciones que hacen más interesante la tarde.',
     episodes: [
       Episode(title: 'Encuéntate Cátedra', embedUrl: 'https://open.spotify.com/embed/episode/6AjwT7PnZ1giXgC0FLxYWt?utm_source=generator'),
       Episode(title: 'HPL', embedUrl: 'https://open.spotify.com/embed/episode/45J9YnSutpPdrsLR9UUdTd?utm_source=generator'),

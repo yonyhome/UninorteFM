@@ -3,16 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../models/podcast_data.dart';
+import '../services/cover_art_service.dart';
 
 enum PodcastState { idle, loading, playing, paused }
 
 class PodcastProvider extends ChangeNotifier {
-  PodcastState _state = PodcastState.idle;
-  bool _isExpanded = false;
-  Show? _show;
-  int _episodeIndex = 0;
-  Duration _position = Duration.zero;
-  Duration _duration = Duration.zero;
+  PodcastState _state         = PodcastState.idle;
+  bool         _isExpanded    = false;
+  Show?        _show;
+  int          _episodeIndex  = 0;
+  Duration     _position      = Duration.zero;
+  Duration     _duration      = Duration.zero;
+  String?      _episodeCoverUrl;
 
   late final WebViewController _webCtrl;
 
@@ -28,40 +30,52 @@ class PodcastProvider extends ChangeNotifier {
 
   // ── Getters ──────────────────────────────────────────────────────────────────
 
-  WebViewController get webController => _webCtrl;
-  PodcastState get state => _state;
-  Show? get show => _show;
-  int get episodeIndex => _episodeIndex;
-  Episode? get episode => _show?.episodes[_episodeIndex];
-  bool get isActive => _state != PodcastState.idle;
-  bool get isPlaying => _state == PodcastState.playing;
-  bool get isPaused => _state == PodcastState.paused;
-  bool get isLoading => _state == PodcastState.loading;
-  bool get isExpanded => _isExpanded;
-  bool get hasPrevious => _episodeIndex > 0;
-  bool get hasNext =>
+  WebViewController get webController  => _webCtrl;
+  PodcastState      get state          => _state;
+  Show?             get show           => _show;
+  int               get episodeIndex   => _episodeIndex;
+  Episode?          get episode        => _show?.episodes[_episodeIndex];
+  bool              get isActive       => _state != PodcastState.idle;
+  bool              get isPlaying      => _state == PodcastState.playing;
+  bool              get isPaused       => _state == PodcastState.paused;
+  bool              get isLoading      => _state == PodcastState.loading;
+  bool              get isExpanded     => _isExpanded;
+  bool              get hasPrevious    => _episodeIndex > 0;
+  bool              get hasNext        =>
       _show != null && _episodeIndex < _show!.episodes.length - 1;
 
   Duration get position => _position;
   Duration get duration => _duration;
 
+  /// URL de la portada del episodio actual (puede ser null mientras carga).
+  String? get episodeCoverUrl => _episodeCoverUrl;
+
   double get progress => _duration.inMilliseconds > 0
       ? (_position.inMilliseconds / _duration.inMilliseconds).clamp(0.0, 1.0)
       : 0.0;
 
+  String get positionText => _formatDuration(_position);
+  String get durationText => _formatDuration(_duration);
+
   String get remainingText {
     if (_duration == Duration.zero) return '';
     final rem = _duration - _position;
-    final m = rem.inMinutes.abs();
-    final s = rem.inSeconds.abs() % 60;
+    final m   = rem.inMinutes.abs();
+    final s   = rem.inSeconds.abs() % 60;
     return '-${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  static String _formatDuration(Duration d) {
+    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '${d.inHours > 0 ? '${d.inHours}:' : ''}$m:$s';
   }
 
   // ── JS bridge ────────────────────────────────────────────────────────────────
 
   void _onProgress(String message) {
     try {
-      final data = jsonDecode(message) as Map<String, dynamic>;
+      final data  = jsonDecode(message) as Map<String, dynamic>;
       final posMs = (data['position'] as num?)?.toInt() ?? 0;
       final durMs = (data['duration'] as num?)?.toInt() ?? 0;
       final paused = data['paused'] as bool? ?? true;
@@ -87,15 +101,25 @@ class PodcastProvider extends ChangeNotifier {
   // ── Public API ────────────────────────────────────────────────────────────────
 
   Future<void> playEpisode(Show show, int index) async {
-    _show = show;
-    _episodeIndex = index;
-    _position = Duration.zero;
-    _duration = Duration.zero;
-    _state = PodcastState.loading;
-    _isExpanded = true; // auto-expand when a new episode starts
+    _show          = show;
+    _episodeIndex  = index;
+    _position      = Duration.zero;
+    _duration      = Duration.zero;
+    _episodeCoverUrl = null;
+    _state         = PodcastState.loading;
+    _isExpanded    = true;
     notifyListeners();
 
-    final embedUrl = show.episodes[index].embedUrl;
+    final ep       = show.episodes[index];
+    final embedUrl = ep.embedUrl;
+
+    // Cargar la portada específica del episodio en background
+    CoverArtService.forEpisode(embedUrl).then((url) {
+      if (url != null && _show?.id == show.id && _episodeIndex == index) {
+        _episodeCoverUrl = url;
+        notifyListeners();
+      }
+    });
 
     String episodeId = '';
     try {
@@ -106,15 +130,29 @@ class PodcastProvider extends ChangeNotifier {
       }
     } catch (_) {}
 
-    // On iOS, WebKit blocks autoplay — the user must tap play first.
     final noAutoplay = Platform.isIOS;
 
+    // El iframe se carga pero permanece invisible — la UI nativa controla todo.
     final html = '''
     <!DOCTYPE html>
     <html>
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <style>body, html { margin: 0; padding: 0; height: 100%; background-color: #000; overflow: hidden; }</style>
+      <style>
+        body, html {
+          margin: 0; padding: 0; height: 100%;
+          background-color: #000;
+          overflow: hidden;
+        }
+        /* Iframe visible para que el IFrame API funcione correctamente,
+           pero lo tapamos con nuestra UI nativa en Flutter */
+        #embed-iframe {
+          position: absolute;
+          width: 1px; height: 1px;
+          opacity: 0;
+          pointer-events: none;
+        }
+      </style>
     </head>
     <body>
       <div id="embed-iframe"></div>
@@ -123,7 +161,11 @@ class PodcastProvider extends ChangeNotifier {
         const _noAutoplay = $noAutoplay;
         window.onSpotifyIframeApiReady = (IFrameAPI) => {
           const element = document.getElementById('embed-iframe');
-          const options = { width: '100%', height: '100%', uri: 'spotify:episode:$episodeId' };
+          const options = {
+            width: '1',
+            height: '1',
+            uri: 'spotify:episode:$episodeId'
+          };
           const callback = (EmbedController) => {
             window.spotifyCtrl = EmbedController;
             EmbedController.addListener('playback_update', e => {
@@ -139,9 +181,9 @@ class PodcastProvider extends ChangeNotifier {
           };
           IFrameAPI.createController(element, options, callback);
         };
-        // resume() continues from current position; play() restarts from 0.
         function resumePodcast() { window.spotifyCtrl && window.spotifyCtrl.resume(); }
         function pausePodcast()  { window.spotifyCtrl && window.spotifyCtrl.pause(); }
+        function seekPodcast(ms) { window.spotifyCtrl && window.spotifyCtrl.seek(ms); }
       </script>
     </body>
     </html>
@@ -169,6 +211,12 @@ class PodcastProvider extends ChangeNotifier {
     await _webCtrl.runJavaScript('resumePodcast()');
   }
 
+  Future<void> seekTo(Duration position) async {
+    await _webCtrl.runJavaScript('seekPodcast(${position.inMilliseconds})');
+    _position = position;
+    notifyListeners();
+  }
+
   void togglePlayPause() {
     if (isPlaying) {
       pause();
@@ -187,11 +235,12 @@ class PodcastProvider extends ChangeNotifier {
 
   void stop() {
     _webCtrl.loadRequest(Uri.parse('about:blank'));
-    _show = null;
-    _state = PodcastState.idle;
-    _isExpanded = false;
-    _position = Duration.zero;
-    _duration = Duration.zero;
+    _show            = null;
+    _state           = PodcastState.idle;
+    _isExpanded      = false;
+    _position        = Duration.zero;
+    _duration        = Duration.zero;
+    _episodeCoverUrl = null;
     notifyListeners();
   }
 }

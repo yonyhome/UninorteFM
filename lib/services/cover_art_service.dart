@@ -1,21 +1,31 @@
 import 'dart:convert';
 import 'dart:io';
 
-/// Fetches Spotify podcast show artwork via the public oembed endpoint.
-/// Results are cached in memory so each show is only fetched once.
+/// Fetches Spotify podcast artwork via the public oembed endpoint.
+/// Two caches:
+///   - [_showCache]    showId → Future<imageUrl?>   (portada del show)
+///   - [_episodeCache] episodeId → Future<imageUrl?> (portada específica del episodio)
 class CoverArtService {
   CoverArtService._();
 
-  // Cache: showId → Future<imageUrl?>
-  // Using Future as the value lets multiple concurrent callers share one request.
-  static final Map<String, Future<String?>> _cache = {};
+  static final Map<String, Future<String?>> _showCache    = {};
+  static final Map<String, Future<String?>> _episodeCache = {};
 
-  /// Returns the cover art URL for [showId] (derived from its first episode).
-  /// Returns null on error or if no image is available.
+  // ── Show cover (uses first episode to derive show art) ──────────────────────
   static Future<String?> forShow(String showId, String firstEmbedUrl) {
-    return _cache.putIfAbsent(showId, () => _fetch(firstEmbedUrl));
+    return _showCache.putIfAbsent(showId, () => _fetch(firstEmbedUrl));
   }
 
+  // ── Per-episode cover art ───────────────────────────────────────────────────
+  /// Returns the thumbnail specific to this [embedUrl].
+  /// Cache key is the episode ID extracted from the URL.
+  static Future<String?> forEpisode(String embedUrl) {
+    final epId = _episodeId(embedUrl);
+    if (epId == null) return Future.value(null);
+    return _episodeCache.putIfAbsent(epId, () => _fetch(embedUrl));
+  }
+
+  // ── Internal ────────────────────────────────────────────────────────────────
   static Future<String?> _fetch(String embedUrl) async {
     try {
       final epId = _episodeId(embedUrl);
@@ -43,11 +53,9 @@ class CoverArtService {
     }
   }
 
-  /// Extracts the Spotify episode ID from an embed URL such as:
-  ///   https://open.spotify.com/embed/episode/5mnkdwqeW5BDnSykDOn4KW?...
   static String? _episodeId(String embedUrl) {
     final segs = Uri.parse(embedUrl).pathSegments;
-    final idx = segs.indexOf('episode');
+    final idx  = segs.indexOf('episode');
     if (idx == -1 || idx + 1 >= segs.length) return null;
     return segs[idx + 1];
   }
