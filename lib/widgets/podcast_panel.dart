@@ -25,8 +25,7 @@ class PodcastMiniBar extends StatelessWidget {
       height: visible ? 74 : 0,
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(),
-      child: SizedBox(
-        height: 74,
+      child: SizedBox.expand(
         child: _MiniBarContent(podcast: podcast),
       ),
     );
@@ -259,16 +258,17 @@ class PodcastExpandedPanel extends StatelessWidget {
         color: const Color(0xFF080808),
         child: Stack(
           children: [
-            // ── WebView invisible — mantiene el audio ────────────────────────
-            Positioned(
-              left: 0, top: 0,
-              width: 1, height: 1,
-              child: Opacity(
-                opacity: 0,
-                child: WebViewWidget(
-                  controller: podcast.webController,
-                ),
+            // ── WebView a pantalla completa — el IFrame API necesita tamaño ─
+            // real para inicializar el controlador de Spotify correctamente.
+            Positioned.fill(
+              child: WebViewWidget(
+                controller: podcast.webController,
               ),
+            ),
+
+            // ── Capa opaca que oculta el embed de Spotify al usuario ─────────
+            Positioned.fill(
+              child: Container(color: const Color(0xFF080808)),
             ),
 
             // ── UI nativa ────────────────────────────────────────────────────

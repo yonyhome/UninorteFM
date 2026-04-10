@@ -291,6 +291,7 @@ class _NowPlayingCardState extends State<_NowPlayingCard>
           padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Chip AHORA + tiempo restante
               Row(

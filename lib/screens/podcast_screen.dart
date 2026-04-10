@@ -665,13 +665,11 @@ class _EpisodeRow extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // Botón play / pause
+              // Indicador visual de play / pause (tap manejado por el row)
               _EpisodePlayBtn(
                 accent: accent,
                 isPlaying: isPlaying,
                 isCurrent: isCurrent,
-                show: show,
-                index: index,
               ),
             ],
           ),
@@ -683,57 +681,41 @@ class _EpisodeRow extends StatelessWidget {
 
 // ─── Botón de play del episodio ───────────────────────────────────────────────
 
+// Widget puramente visual — el GestureDetector está en _EpisodeRow
 class _EpisodePlayBtn extends StatelessWidget {
   final Color accent;
   final bool  isPlaying;
   final bool  isCurrent;
-  final Show  show;
-  final int   index;
 
   const _EpisodePlayBtn({
     required this.accent,
     required this.isPlaying,
     required this.isCurrent,
-    required this.show,
-    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        final podcastProv = context.read<PodcastProvider>();
-        if (isCurrent) {
-          podcastProv.togglePlayPause();
-        } else {
-          context.read<RadioProvider>().stop();
-          podcastProv.playEpisode(show, index);
-          Navigator.of(context).pop();
-        }
-      },
-      child: Container(
-        width: 40, height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isCurrent
-              ? accent
-              : accent.withValues(alpha: 0.15),
-          boxShadow: isCurrent
-              ? [BoxShadow(
-                  color: accent.withValues(alpha: 0.4),
-                  blurRadius: 12,
-                  spreadRadius: 1,
-                )]
-              : null,
-        ),
-        child: Icon(
-          isPlaying
-              ? Icons.pause_rounded
-              : Icons.play_arrow_rounded,
-          color: isCurrent ? Colors.white : accent,
-          size: 22,
-        ),
+    return Container(
+      width: 40, height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isCurrent
+            ? accent
+            : accent.withValues(alpha: 0.15),
+        boxShadow: isCurrent
+            ? [BoxShadow(
+                color: accent.withValues(alpha: 0.4),
+                blurRadius: 12,
+                spreadRadius: 1,
+              )]
+            : null,
+      ),
+      child: Icon(
+        isPlaying
+            ? Icons.pause_rounded
+            : Icons.play_arrow_rounded,
+        color: isCurrent ? Colors.white : accent,
+        size: 22,
       ),
     );
   }

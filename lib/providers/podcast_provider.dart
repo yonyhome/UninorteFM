@@ -140,17 +140,17 @@ class PodcastProvider extends ChangeNotifier {
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <style>
         body, html {
-          margin: 0; padding: 0; height: 100%;
+          margin: 0; padding: 0;
+          width: 100%; height: 100%;
           background-color: #000;
           overflow: hidden;
         }
-        /* Iframe visible para que el IFrame API funcione correctamente,
-           pero lo tapamos con nuestra UI nativa en Flutter */
+        /* El iframe ocupa toda la vista para que el IFrame API inicialice
+           correctamente. La UI de Flutter lo tapa con una capa opaca. */
         #embed-iframe {
           position: absolute;
-          width: 1px; height: 1px;
-          opacity: 0;
-          pointer-events: none;
+          width: 100%; height: 100%;
+          border: none;
         }
       </style>
     </head>
@@ -162,8 +162,8 @@ class PodcastProvider extends ChangeNotifier {
         window.onSpotifyIframeApiReady = (IFrameAPI) => {
           const element = document.getElementById('embed-iframe');
           const options = {
-            width: '1',
-            height: '1',
+            width: '100%',
+            height: '100%',
             uri: 'spotify:episode:$episodeId'
           };
           const callback = (EmbedController) => {
@@ -181,6 +181,7 @@ class PodcastProvider extends ChangeNotifier {
           };
           IFrameAPI.createController(element, options, callback);
         };
+        function playPodcast()   { window.spotifyCtrl && window.spotifyCtrl.play(); }
         function resumePodcast() { window.spotifyCtrl && window.spotifyCtrl.resume(); }
         function pausePodcast()  { window.spotifyCtrl && window.spotifyCtrl.pause(); }
         function seekPodcast(ms) { window.spotifyCtrl && window.spotifyCtrl.seek(ms); }
@@ -217,9 +218,17 @@ class PodcastProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> play() async {
+    await _webCtrl.runJavaScript('playPodcast()');
+  }
+
   void togglePlayPause() {
     if (isPlaying) {
       pause();
+    } else if (isLoading) {
+      // En iOS el autoplay está bloqueado; el usuario arranca la reproducción
+      // manualmente con play() en lugar de resume().
+      play();
     } else {
       resume();
     }

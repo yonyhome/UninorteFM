@@ -51,8 +51,7 @@ class _MiniPlayerState extends State<MiniPlayer>
       height: widget.visible ? 74 : 0,
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(),
-      child: SizedBox(
-        height: 74,
+      child: SizedBox.expand(
         child: _RadioBar(
           radio: radio,
           pulse: _pulse,
