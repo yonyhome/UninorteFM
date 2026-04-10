@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../models/podcast_data.dart';
 import '../providers/podcast_provider.dart';
 import '../services/cover_art_service.dart';
 
