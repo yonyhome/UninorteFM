@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../models/podcast_data.dart';
 import '../services/cover_art_service.dart';
 
@@ -19,13 +21,31 @@ class PodcastProvider extends ChangeNotifier {
   late final WebViewController _webCtrl;
 
   PodcastProvider() {
-    _webCtrl = WebViewController()
+    // En iOS, configuramos el WebKitWebView para permitir reproducción
+    // inline y sin gesto de usuario (necesario para el embed de Spotify).
+    if (Platform.isIOS) {
+      final params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+      _webCtrl = WebViewController.fromPlatformCreationParams(params);
+    } else {
+      _webCtrl = WebViewController();
+    }
+
+    _webCtrl
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black)
       ..addJavaScriptChannel(
         'ProgressBridge',
         onMessageReceived: (msg) => _onProgress(msg.message),
       );
+
+    // En Android, deshabilitamos el requisito de gesto de usuario para audio.
+    if (Platform.isAndroid) {
+      (_webCtrl.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
   }
 
   // ── Getters ──────────────────────────────────────────────────────────────────
@@ -130,8 +150,6 @@ class PodcastProvider extends ChangeNotifier {
       }
     } catch (_) {}
 
-    final noAutoplay = Platform.isIOS;
-
     // El iframe se carga pero permanece invisible — la UI nativa controla todo.
     final html = '''
     <!DOCTYPE html>
@@ -158,7 +176,6 @@ class PodcastProvider extends ChangeNotifier {
       <div id="embed-iframe"></div>
       <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
       <script>
-        const _noAutoplay = $noAutoplay;
         window.onSpotifyIframeApiReady = (IFrameAPI) => {
           const element = document.getElementById('embed-iframe');
           const options = {
@@ -176,7 +193,7 @@ class PodcastProvider extends ChangeNotifier {
               }));
             });
             EmbedController.addListener('ready', () => {
-              if (!_noAutoplay) EmbedController.play();
+              EmbedController.play();
             });
           };
           IFrameAPI.createController(element, options, callback);
