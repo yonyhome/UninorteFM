@@ -241,12 +241,15 @@ class PodcastExpandedPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final podcast = context.watch<PodcastProvider>();
-    final mq      = MediaQuery.of(context);
-    final screenH = mq.size.height;
-    final topPad  = mq.viewPadding.top;
-    final panelH  = screenH - topPad;
-    final top     = podcast.isExpanded ? topPad : screenH;
+    final podcast   = context.watch<PodcastProvider>();
+    final mq        = MediaQuery.of(context);
+    final screenH   = mq.size.height;
+    final topPad    = mq.viewPadding.top;
+    // El navbar tiene 64 px fijos + safe area inferior → el panel se detiene
+    // justo encima para que el navbar siempre sea visible.
+    final navBarH   = 64.0 + mq.viewPadding.bottom;
+    final panelH    = screenH - topPad - navBarH;
+    final top       = podcast.isExpanded ? topPad : screenH;
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 380),
@@ -277,7 +280,7 @@ class PodcastExpandedPanel extends StatelessWidget {
                 _PanelHeader(podcast: podcast),
                 Expanded(child: _PanelBody(podcast: podcast)),
                 _PanelControls(podcast: podcast),
-                SizedBox(height: mq.viewPadding.bottom + 8),
+                const SizedBox(height: 8),
               ],
             ),
           ],

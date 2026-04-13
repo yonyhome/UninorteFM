@@ -44,6 +44,9 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   void _goTo(int index) {
     if (_currentIndex == index) return;
+    // Si el panel del podcast está expandido, colapsarlo al mini reproductor.
+    final podcast = context.read<PodcastProvider>();
+    if (podcast.isExpanded) podcast.collapse();
     setState(() => _currentIndex = index);
     _pageCtrl.animateToPage(
       index,
