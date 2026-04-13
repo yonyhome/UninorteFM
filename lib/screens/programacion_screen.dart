@@ -4,8 +4,16 @@ import '../models/schedule_data.dart';
 import '../providers/schedule_provider.dart';
 import '../theme/app_theme.dart';
 
-const _dayNames  = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
-const _dayLabels = ['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'];
+const _dayNames = [
+  'lunes',
+  'martes',
+  'miércoles',
+  'jueves',
+  'viernes',
+  'sábado',
+  'domingo'
+];
+const _dayLabels = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
 
 class ProgramacionScreen extends StatefulWidget {
   const ProgramacionScreen({super.key});
@@ -19,15 +27,15 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
   late final ScrollController _scroll;
   late final ScrollController _chipScroll;
 
-  static const _rowHeight  = 80.0;
-  static const _listPadTop = 0.0;
+  static const _rowHeight = 86.0; // 80px item + 6px bottom padding
+  static const _listPadTop = 4.0; // matches ListView padding top
 
   @override
   void initState() {
     super.initState();
     _selectedDay = DateTime.now().weekday - 1;
-    _scroll      = ScrollController();
-    _chipScroll  = ScrollController();
+    _scroll = ScrollController();
+    _chipScroll = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToNow());
   }
 
@@ -40,19 +48,24 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
 
   void _scrollToNow() {
     if (!mounted) return;
-    final now        = DateTime.now();
+    if (!_scroll.hasClients) return;
+
+    final now = DateTime.now();
     final todayIndex = now.weekday - 1;
     if (_selectedDay != todayIndex) return;
 
-    final programs   = programsForDay(_dayNames[_selectedDay]);
+    final programs = programsForDay(_dayNames[_selectedDay]);
     final nowMinutes = now.hour * 60 + now.minute;
     final idx = programs.indexWhere((p) {
       final end = p.endMinutes == 0 ? 1440 : p.endMinutes;
       return nowMinutes >= p.startMinutes && nowMinutes < end;
     });
-    if (idx < 1) return;
+    if (idx < 0) return;
 
-    final target = ((idx - 1) * _rowHeight + _listPadTop)
+    // Scroll hasta el programa actual (oculto en la card grande).
+    // Como ese item tiene altura 0, el primer "A continuación" queda
+    // visible justo al inicio de la lista.
+    final target = (idx * _rowHeight + _listPadTop)
         .clamp(0.0, _scroll.position.maxScrollExtent);
     _scroll.animateTo(
       target,
@@ -63,23 +76,28 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
 
   void _onDayTap(int i) {
     setState(() => _selectedDay = i);
-    final chipOffset = (i * 58.0).clamp(0.0, double.infinity);
-    _chipScroll.animateTo(
-      chipOffset,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOut,
-    );
+    if (_chipScroll.hasClients) {
+      final chipOffset = (i * 58.0).clamp(
+        0.0,
+        _chipScroll.position.maxScrollExtent,
+      );
+      _chipScroll.animateTo(
+        chipOffset,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToNow());
   }
 
   @override
   Widget build(BuildContext context) {
     context.watch<ScheduleProvider>();
-    final programs   = programsForDay(_dayNames[_selectedDay]);
-    final now        = DateTime.now();
+    final programs = programsForDay(_dayNames[_selectedDay]);
+    final now = DateTime.now();
     final todayIndex = now.weekday - 1;
     final nowMinutes = now.hour * 60 + now.minute;
-    final isToday    = _selectedDay == todayIndex;
+    final isToday = _selectedDay == todayIndex;
 
     // Encontrar el programa actual (si existe y es hoy)
     final currentProgram = isToday
@@ -98,7 +116,8 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
           child: Row(
             children: [
               Container(
-                width: 4, height: 24,
+                width: 4,
+                height: 24,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(2),
@@ -108,9 +127,9 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
               Text(
                 'Programación',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
               ),
             ],
           ),
@@ -127,14 +146,15 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
             itemCount: 7,
             itemBuilder: (_, i) {
               final isSelected = i == _selectedDay;
-              final isT        = i == todayIndex;
+              final isT = i == todayIndex;
               return Padding(
                 padding: EdgeInsets.only(right: i < 6 ? 6 : 0),
                 child: GestureDetector(
                   onTap: () => _onDayTap(i),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    width: 52, height: 52,
+                    width: 52,
+                    height: 52,
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.primary
@@ -198,10 +218,12 @@ class _ProgramacionScreenState extends State<ProgramacionScreen> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 120),
             itemCount: programs.length,
             itemBuilder: (_, i) {
-              final p   = programs[i];
+              final p = programs[i];
+              print(
+                  'Programa: ${p.name} (${p.startMinutes} - ${p.endMinutes})');
               final end = p.endMinutes == 0 ? 1440 : p.endMinutes;
-              final isNow  = isToday &&
-                  nowMinutes >= p.startMinutes && nowMinutes < end;
+              final isNow =
+                  isToday && nowMinutes >= p.startMinutes && nowMinutes < end;
               final isPast = isToday && nowMinutes >= end;
 
               // Ocultar el actual ya que lo mostramos en la card grande
@@ -258,14 +280,12 @@ class _NowPlayingCardState extends State<_NowPlayingCard>
 
   @override
   Widget build(BuildContext context) {
-    final p      = widget.program;
-    final color  = p.color;
-    final end    = p.endMinutes == 0 ? 1440 : p.endMinutes;
-    final total  = end - p.startMinutes;
+    final p = widget.program;
+    final color = p.color;
+    final end = p.endMinutes == 0 ? 1440 : p.endMinutes;
+    final total = end - p.startMinutes;
     final elapsed = widget.nowMinutes - p.startMinutes;
-    final progress = total > 0
-        ? (elapsed / total).clamp(0.0, 1.0)
-        : 0.0;
+    final progress = total > 0 ? (elapsed / total).clamp(0.0, 1.0) : 0.0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -298,12 +318,14 @@ class _NowPlayingCardState extends State<_NowPlayingCard>
                 children: [
                   // Dot pulsante
                   FadeTransition(
-                    opacity: Tween<double>(begin: 0.4, end: 1.0)
-                        .animate(_pulse),
+                    opacity:
+                        Tween<double>(begin: 0.4, end: 1.0).animate(_pulse),
                     child: Container(
-                      width: 8, height: 8,
+                      width: 8,
+                      height: 8,
                       decoration: BoxDecoration(
-                        color: color, shape: BoxShape.circle,
+                        color: color,
+                        shape: BoxShape.circle,
                       ),
                     ),
                   ),
@@ -424,120 +446,119 @@ class _ProgramRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = program.color;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 400),
-      decoration: BoxDecoration(
-        color: isCurrent
-            ? color.withValues(alpha: 0.10)
-            : const Color(0xFF0D0D0D),
-        borderRadius: BorderRadius.circular(16),
-        border: Border(
-          left: BorderSide(
-            color: isCurrent
-                ? color
-                : isPast
-                    ? Colors.white.withValues(alpha: 0.03)
-                    : Colors.white.withValues(alpha: 0.06),
-            width: isCurrent ? 3 : 1,
-          ),
-          top: BorderSide(
-            color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
-            width: 0.5,
-          ),
-          right: BorderSide(
-            color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
-            width: 0.5,
-          ),
-          bottom: BorderSide(
-            color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
-            width: 0.5,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        decoration: BoxDecoration(
+          color: isCurrent
+              ? color.withValues(alpha: 0.10)
+              : const Color(0xFF0D0D0D),
+          border: Border(
+            left: BorderSide(
+              color: isCurrent
+                  ? color
+                  : isPast
+                      ? Colors.white.withValues(alpha: 0.03)
+                      : Colors.white.withValues(alpha: 0.06),
+              width: isCurrent ? 3 : 1,
+            ),
+            top: BorderSide(
+              color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
+              width: 0.5,
+            ),
+            right: BorderSide(
+              color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
+              width: 0.5,
+            ),
+            bottom: BorderSide(
+              color: Colors.white.withValues(alpha: isCurrent ? 0.0 : 0.04),
+              width: 0.5,
+            ),
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Bloque de tiempo — columna izquierda prominente
-            Container(
-              width: 76,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    program.startLabel,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: isCurrent
-                          ? Colors.white
-                          : isPast
-                              ? Colors.white24
-                              : Colors.white.withValues(alpha: 0.75),
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                      letterSpacing: -0.3,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Bloque de tiempo — columna izquierda prominente
+              Container(
+                width: 76,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      program.startLabel,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: isCurrent
+                            ? Colors.white
+                            : isPast
+                                ? Colors.white24
+                                : Colors.white.withValues(alpha: 0.75),
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                        letterSpacing: -0.3,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    program.endLabel,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      color: isCurrent
-                          ? Colors.white38
-                          : isPast
-                              ? Colors.white12
-                              : Colors.white24,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                    const SizedBox(height: 2),
+                    Text(
+                      program.endLabel,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: isCurrent
+                            ? Colors.white38
+                            : isPast
+                                ? Colors.white12
+                                : Colors.white24,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            // Separador vertical
-            Container(
-              width: 1, height: 36,
-              color: isCurrent
-                  ? color.withValues(alpha: 0.5)
-                  : Colors.white.withValues(alpha: 0.07),
-            ),
-            const SizedBox(width: 12),
-
-            // Nombre + categoría
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    program.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: isPast
-                          ? Colors.white38
-                          : Colors.white,
-                      height: 1.2,
-                      letterSpacing: -0.2,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 5),
-                  _CategoryChip(
-                      color: color,
-                      label: program.category,
-                      faded: isPast),
-                ],
+              // Separador vertical
+              Container(
+                width: 1,
+                height: 36,
+                color: isCurrent
+                    ? color.withValues(alpha: 0.5)
+                    : Colors.white.withValues(alpha: 0.07),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+
+              // Nombre + categoría
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      program.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: isPast ? Colors.white38 : Colors.white,
+                        height: 1.2,
+                        letterSpacing: -0.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 5),
+                    _CategoryChip(
+                        color: color, label: program.category, faded: isPast),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
