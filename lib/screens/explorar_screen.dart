@@ -20,25 +20,32 @@ class _SocialLink {
 
 const _links = [
   _SocialLink(
-    label: 'Facebook',
-    subtitle: 'Síguenos en Facebook',
-    url: 'https://www.facebook.com/uninortefm',
-    icon: Icons.facebook_rounded,
-    color: Color(0xFF1877F2),
-  ),
-  _SocialLink(
-    label: 'WhatsApp',
-    subtitle: 'Escríbenos al +57 300 000 0000',
-    url: 'https://wa.me/573000000000',
-    icon: Icons.chat_bubble_rounded,
-    color: Color(0xFF25D366),
-  ),
-  _SocialLink(
     label: 'Sitio Web',
     subtitle: 'www.uninorte.edu.co',
     url: 'https://www.uninorte.edu.co/web/uninorte-fm-estereo',
     icon: Icons.language_rounded,
     color: AppColors.primary,
+  ),
+  _SocialLink(
+    label: 'WhatsApp',
+    subtitle: 'Escríbenos al +57 3233994626',
+    url: 'https://wa.me/573233994626',
+    icon: Icons.chat_bubble_rounded,
+    color: Color(0xFF25D366),
+  ),
+  _SocialLink(
+    label: 'Instagram',
+    subtitle: 'Síguenos en Instagram',
+    url: 'https://www.instagram.com/uninortefm?igsh=MXQ5dXIyb3E4dTBsMw==',
+    icon: Icons.camera_alt_rounded,
+    color: Color(0xFFE4405F), // color oficial de Instagram
+  ),
+  _SocialLink(
+    label: 'Facebook',
+    subtitle: 'Síguenos en Facebook',
+    url: 'https://www.facebook.com/uninortefm',
+    icon: Icons.facebook_rounded,
+    color: Color(0xFF1877F2),
   ),
 ];
 
@@ -148,8 +155,8 @@ class _SocialCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => launchUrl(Uri.parse(link.url),
-          mode: LaunchMode.externalApplication),
+      onTap: () =>
+          launchUrl(Uri.parse(link.url), mode: LaunchMode.externalApplication),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
