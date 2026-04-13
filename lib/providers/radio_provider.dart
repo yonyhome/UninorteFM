@@ -33,7 +33,6 @@ class RadioProvider extends ChangeNotifier {
     if (state.playing) {
       _setState(RadioState.playing);
     }
-    // Idle/stop events are driven by explicit pause()/stop() calls only.
   }
 
   void _onProcessingState(ProcessingState ps) {
@@ -42,6 +41,10 @@ class RadioProvider extends ChangeNotifier {
       _setState(RadioState.loading);
     } else if (ps == ProcessingState.ready && _handler.player.playing) {
       _setState(RadioState.playing);
+    } else if (ps == ProcessingState.idle) {
+      // El usuario detuvo la reproducción desde la notificación o pantalla
+      // de bloqueo — sincronizar el estado de la app.
+      _setState(RadioState.idle);
     }
   }
 

@@ -37,6 +37,11 @@ class RadioAudioHandler extends BaseAudioHandler {
   }
 
   @override
+  Future<void> pause() async {
+    await _player.stop();
+  }
+
+  @override
   Future<void> stop() async {
     await _player.stop();
   }
