@@ -1,7 +1,7 @@
 name: uninorte_fm
 description: Uninorte 103.1 FM Estéreo — Mueve la Cultura
 publish_to: "none"
-version: 10.4.0+1
+version: 10.4.0+7
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

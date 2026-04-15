@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "co.edu.uninorte.UninorteFM"
+        applicationId = "co.edu.uninorte.uninortefm"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

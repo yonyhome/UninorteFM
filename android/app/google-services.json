@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:526932519629:android:d311b6014eda33539f9784",
+        "mobilesdk_app_id": "1:526932519629:android:87bfe2e97fd975c29f9784",
         "android_client_info": {
-          "package_name": "co.edu.uninorte.UninorteFM"
+          "package_name": "co.edu.uninorte.uninortefm"
         }
       },
       "oauth_client": [],
