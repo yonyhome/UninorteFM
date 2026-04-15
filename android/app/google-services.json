@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526932519629",
+    "project_id": "uninortefm",
+    "storage_bucket": "uninortefm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526932519629:android:d311b6014eda33539f9784",
+        "android_client_info": {
+          "package_name": "co.edu.uninorte.UninorteFM"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTNI7h2r4uMjMPgkVi8khR-scnC0iQxXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

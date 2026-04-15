@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../services/analytics_service.dart';
 import '../theme/app_theme.dart';
 import 'legal_screen.dart';
 
@@ -27,6 +28,7 @@ class _MasScreenState extends State<MasScreen> {
   }
 
   Future<void> _share() async {
+    AnalyticsService.logShareApp();
     await Share.share(
       '¡Escucha Uninorte 103.1 FM Estéreo — Mueve la Cultura!\nhttps://www.uninorte.edu.co/web/uninorte-fm-estereo',
       subject: 'Uninorte FM',
@@ -120,10 +122,13 @@ class _MasScreenState extends State<MasScreen> {
             label: 'Contacto',
             subtitle: 'Escríbenos por WhatsApp',
             iconColor: const Color(0xFF25D366),
-            onTap: () => launchUrl(
-              Uri.parse('https://wa.me/573233994626'),
-              mode: LaunchMode.externalApplication,
-            ),
+            onTap: () {
+              AnalyticsService.logContactTap();
+              launchUrl(
+                Uri.parse('https://wa.me/573233994626'),
+                mode: LaunchMode.externalApplication,
+              );
+            },
           ),
           _MenuItem(
             icon: Icons.share_rounded,
@@ -140,7 +145,9 @@ class _MasScreenState extends State<MasScreen> {
             label: 'Términos y Condiciones',
             subtitle: 'Condiciones de uso de la app',
             iconColor: Color(0xFF64B5F6),
-            onTap: () => Navigator.of(context).push(
+            onTap: () {
+              AnalyticsService.logLegalView('terminos');
+              Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const LegalScreen(
                   title: 'Términos y Condiciones',
@@ -216,14 +223,17 @@ Además, se tienen implementados mecanismos de seguridad para el acceso a las ba
 Esta obligación cobija todas las informaciones personales, contables, técnicas, comerciales o de cualquier otro tipo suministradas en la ejecución y ejercicio de sus funciones, incluyendo de manera enunciativa y no taxativa las fórmulas, procedimientos, técnicas, know - how y demás informaciones en general a que puedan tener acceso.''', // TODO: añadir el texto aquí
                 ),
               ),
-            ),
+            );
+            },
           ),
           _MenuItem(
             icon: Icons.shield_outlined,
             label: 'Política de Privacidad',
             subtitle: 'Cómo tratamos tus datos',
             iconColor: Color(0xFF81C784),
-            onTap: () => Navigator.of(context).push(
+            onTap: () {
+              AnalyticsService.logLegalView('privacidad');
+              Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const LegalScreen(
                   title: 'Política de Privacidad',
@@ -333,7 +343,8 @@ Además, se tienen implementados mecanismos de seguridad para el acceso a las ba
 Esta obligación cobija todas las informaciones personales, contables, técnicas, comerciales o de cualquier otro tipo suministradas en la ejecución y ejercicio de sus funciones, incluyendo de manera enunciativa y no taxativa las fórmulas, procedimientos, técnicas, know - how y demás informaciones en general a que puedan tener acceso.''', // TODO: añadir el texto aquí
                 ),
               ),
-            ),
+            );
+            },
           ),
 
           const SizedBox(height: 24),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/radio_provider.dart';
 import '../providers/podcast_provider.dart';
+import '../services/analytics_service.dart';
 import '../screens/home_screen.dart';
 import '../screens/podcast_screen.dart';
 import '../screens/programacion_screen.dart';
@@ -53,6 +54,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       duration: const Duration(milliseconds: 320),
       curve: Curves.easeInOut,
     );
+    AnalyticsService.logTabChange(index);
   }
 
   @override

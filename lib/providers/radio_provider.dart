@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import '../services/radio_audio_handler.dart';
+import '../services/analytics_service.dart';
 
 enum RadioState { idle, loading, playing, paused, error }
 
@@ -57,11 +58,13 @@ class RadioProvider extends ChangeNotifier {
   Future<void> play() async {
     _isUserStopped = false;
     _setState(RadioState.loading);
+    AnalyticsService.logRadioPlay();
     try {
       await _handler.play();
     } catch (_) {
       if (!_isUserStopped) {
         _setState(RadioState.error);
+        AnalyticsService.logRadioError();
         Future.delayed(const Duration(seconds: 3), () {
           if (_state == RadioState.error) _setState(RadioState.idle);
         });
@@ -74,6 +77,7 @@ class RadioProvider extends ChangeNotifier {
     _isUserStopped = true;
     await _handler.stop();
     _setState(RadioState.paused);
+    AnalyticsService.logRadioPause();
   }
 
   /// Fully stops the stream and hides the mini player (state → idle).
@@ -81,6 +85,7 @@ class RadioProvider extends ChangeNotifier {
     _isUserStopped = true;
     await _handler.stop();
     _setState(RadioState.idle);
+    AnalyticsService.logRadioStop();
   }
 
   void toggle() {

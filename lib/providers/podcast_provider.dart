@@ -6,6 +6,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../models/podcast_data.dart';
 import '../services/cover_art_service.dart';
+import '../services/analytics_service.dart';
 
 enum PodcastState { idle, loading, playing, paused }
 
@@ -129,6 +130,12 @@ class PodcastProvider extends ChangeNotifier {
     _state         = PodcastState.loading;
     _isExpanded    = true;
     notifyListeners();
+    AnalyticsService.logPodcastEpisodePlay(
+      showId: show.id,
+      showName: show.name,
+      episodeIndex: index,
+      episodeTitle: show.episodes[index].title,
+    );
 
     final ep       = show.episodes[index];
     final embedUrl = ep.embedUrl;
@@ -214,25 +221,46 @@ class PodcastProvider extends ChangeNotifier {
     if (!isActive) return;
     _isExpanded = true;
     notifyListeners();
+    AnalyticsService.logPodcastExpand();
   }
 
   void collapse() {
     _isExpanded = false;
     notifyListeners();
+    AnalyticsService.logPodcastCollapse();
   }
 
   Future<void> pause() async {
     await _webCtrl.runJavaScript('pausePodcast()');
+    if (_show != null) {
+      AnalyticsService.logPodcastEpisodePause(
+        showId: _show!.id,
+        episodeTitle: episode?.title ?? '',
+      );
+    }
   }
 
   Future<void> resume() async {
     await _webCtrl.runJavaScript('resumePodcast()');
+    if (_show != null) {
+      AnalyticsService.logPodcastEpisodeResume(
+        showId: _show!.id,
+        episodeTitle: episode?.title ?? '',
+      );
+    }
   }
 
   Future<void> seekTo(Duration position) async {
     await _webCtrl.runJavaScript('seekPodcast(${position.inMilliseconds})');
     _position = position;
     notifyListeners();
+    if (_show != null) {
+      AnalyticsService.logPodcastEpisodeSeek(
+        showId: _show!.id,
+        episodeTitle: episode?.title ?? '',
+        positionMs: position.inMilliseconds,
+      );
+    }
   }
 
   Future<void> play() async {
@@ -243,8 +271,6 @@ class PodcastProvider extends ChangeNotifier {
     if (isPlaying) {
       pause();
     } else if (isLoading) {
-      // En iOS el autoplay está bloqueado; el usuario arranca la reproducción
-      // manualmente con play() en lugar de resume().
       play();
     } else {
       resume();
@@ -252,11 +278,23 @@ class PodcastProvider extends ChangeNotifier {
   }
 
   void next() {
-    if (hasNext) playEpisode(_show!, _episodeIndex + 1);
+    if (hasNext) {
+      AnalyticsService.logPodcastNext(
+        showId: _show!.id,
+        fromEpisodeTitle: episode?.title ?? '',
+      );
+      playEpisode(_show!, _episodeIndex + 1);
+    }
   }
 
   void previous() {
-    if (hasPrevious) playEpisode(_show!, _episodeIndex - 1);
+    if (hasPrevious) {
+      AnalyticsService.logPodcastPrevious(
+        showId: _show!.id,
+        fromEpisodeTitle: episode?.title ?? '',
+      );
+      playEpisode(_show!, _episodeIndex - 1);
+    }
   }
 
   void stop() {

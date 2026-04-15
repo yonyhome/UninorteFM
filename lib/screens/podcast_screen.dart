@@ -4,6 +4,7 @@ import '../models/podcast_data.dart';
 import '../providers/podcast_provider.dart';
 import '../providers/radio_provider.dart';
 import '../services/cover_art_service.dart';
+import '../services/analytics_service.dart';
 import '../theme/app_theme.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -118,6 +119,10 @@ class _ShowCardState extends State<_ShowCard>
   void _onTapCancel() => _ctrl.forward();
 
   void _openDetail(BuildContext context) {
+    AnalyticsService.logPodcastShowOpen(
+      showId: widget.show.id,
+      showName: widget.show.name,
+    );
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (_, anim, __) => ShowDetailScreen(show: widget.show),

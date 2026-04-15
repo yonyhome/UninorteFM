@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../services/analytics_service.dart';
 import '../theme/app_theme.dart';
 
 class _SocialLink {
@@ -155,8 +156,10 @@ class _SocialCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>
-          launchUrl(Uri.parse(link.url), mode: LaunchMode.externalApplication),
+      onTap: () {
+        AnalyticsService.logSocialLinkTap(link.label);
+        launchUrl(Uri.parse(link.url), mode: LaunchMode.externalApplication);
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(

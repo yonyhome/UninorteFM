@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'services/radio_audio_handler.dart';
+import 'services/analytics_service.dart';
 import 'providers/radio_provider.dart';
 import 'providers/podcast_provider.dart';
 import 'providers/schedule_provider.dart';
@@ -10,6 +12,7 @@ import 'app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   // Force portrait orientation
   await SystemChrome.setPreferredOrientations([
