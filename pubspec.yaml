@@ -1,7 +1,7 @@
 name: uninorte_fm
 description: Uninorte 103.1 FM Estéreo — Mueve la Cultura
 publish_to: "none"
-version: 10.3.0+9
+version: 10.4.0+1
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -24,6 +24,7 @@ dependencies:
   # Firebase
   firebase_core: ^3.6.0
   firebase_analytics: ^11.3.3
+  firebase_remote_config: ^5.1.3
 
   # Utilities
   url_launcher: ^6.3.0

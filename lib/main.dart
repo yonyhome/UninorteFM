@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'services/radio_audio_handler.dart';
 import 'services/analytics_service.dart';
+import 'services/remote_config_service.dart';
 import 'providers/radio_provider.dart';
 import 'providers/podcast_provider.dart';
 import 'providers/schedule_provider.dart';
@@ -13,6 +15,11 @@ import 'app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Inicializar Remote Config y obtener la versión mínima requerida.
+  await RemoteConfigService.init();
+  final packageInfo = await PackageInfo.fromPlatform();
+  final forceUpdate = RemoteConfigService.needsUpdate(packageInfo.version);
 
   // Force portrait orientation
   await SystemChrome.setPreferredOrientations([
@@ -47,7 +54,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => PodcastProvider()),
         ChangeNotifierProvider(create: (_) => ScheduleProvider()),
       ],
-      child: const UninorteFMApp(),
+      child: UninorteFMApp(forceUpdate: forceUpdate),
     ),
   );
 }
