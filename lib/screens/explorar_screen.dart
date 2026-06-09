@@ -48,6 +48,14 @@ const _links = [
     icon: Icons.facebook_rounded,
     color: Color(0xFF1877F2),
   ),
+  _SocialLink(
+    label: 'Spotify',
+    subtitle: 'Escucha nuestro podcast en Spotify',
+    url:
+        'https://open.spotify.com/show/19VLj6Cx7Py2AzWFTaf07E?si=04e31e0f0637413a',
+    icon: Icons.music_note_rounded, // o Icons.spotify si lo tienes disponible
+    color: Color(0xFF1DB954), // color oficial de Spotify
+  ),
 ];
 
 class ExplorarScreen extends StatelessWidget {

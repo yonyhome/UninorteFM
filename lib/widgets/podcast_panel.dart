@@ -38,7 +38,7 @@ class _MiniBarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show    = podcast.show;
+    final show = podcast.show;
     final episode = podcast.episode;
     if (show == null || episode == null) return const SizedBox.shrink();
 
@@ -67,7 +67,8 @@ class _MiniBarContent extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(9),
                 child: SizedBox(
-                  width: 46, height: 46,
+                  width: 46,
+                  height: 46,
                   child: FutureBuilder<String?>(
                     future: CoverArtService.forEpisode(episode.embedUrl),
                     builder: (_, snap) {
@@ -82,16 +83,17 @@ class _MiniBarContent extends StatelessWidget {
                               ],
                             ),
                           ),
-                          child: Icon(Icons.mic_rounded,
-                              color: accent, size: 20),
+                          child:
+                              Icon(Icons.mic_rounded, color: accent, size: 20),
                         );
                       }
                       return Image.network(
-                        url, fit: BoxFit.cover,
+                        url,
+                        fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
                           color: accent.withValues(alpha: 0.3),
-                          child: Icon(Icons.mic_rounded,
-                              color: accent, size: 20),
+                          child:
+                              Icon(Icons.mic_rounded, color: accent, size: 20),
                         ),
                       );
                     },
@@ -134,10 +136,8 @@ class _MiniBarContent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(2),
                         child: LinearProgressIndicator(
                           value: podcast.progress,
-                          backgroundColor:
-                              Colors.white.withValues(alpha: 0.1),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(accent),
+                          backgroundColor: Colors.white.withValues(alpha: 0.1),
+                          valueColor: AlwaysStoppedAnimation<Color>(accent),
                           minHeight: 2,
                         ),
                       ),
@@ -180,7 +180,8 @@ class _MiniPlayBtn extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: podcast.togglePlayPause,
       child: Container(
-        width: 40, height: 40,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: accent.withValues(alpha: 0.18),
@@ -188,9 +189,9 @@ class _MiniPlayBtn extends StatelessWidget {
         alignment: Alignment.center,
         child: podcast.isLoading
             ? SizedBox(
-                width: 15, height: 15,
-                child: CircularProgressIndicator(
-                    color: accent, strokeWidth: 2),
+                width: 15,
+                height: 15,
+                child: CircularProgressIndicator(color: accent, strokeWidth: 2),
               )
             : Icon(
                 podcast.isPlaying
@@ -217,12 +218,11 @@ class _MiniIconBtn extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: enabled ? onTap : null,
       child: SizedBox(
-        width: 34, height: 40,
+        width: 34,
+        height: 40,
         child: Icon(
           icon,
-          color: enabled
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.2),
+          color: enabled ? Colors.white : Colors.white.withValues(alpha: 0.2),
           size: 22,
         ),
       ),
@@ -241,20 +241,21 @@ class PodcastExpandedPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final podcast   = context.watch<PodcastProvider>();
-    final mq        = MediaQuery.of(context);
-    final screenH   = mq.size.height;
-    final topPad    = mq.viewPadding.top;
+    final podcast = context.watch<PodcastProvider>();
+    final mq = MediaQuery.of(context);
+    final screenH = mq.size.height;
+    final topPad = mq.viewPadding.top;
     // El navbar tiene 64 px fijos + safe area inferior → el panel se detiene
     // justo encima para que el navbar siempre sea visible.
-    final navBarH   = 64.0 + mq.viewPadding.bottom;
-    final panelH    = screenH - topPad - navBarH;
-    final top       = podcast.isExpanded ? topPad : screenH;
+    final navBarH = 64.0 + mq.viewPadding.bottom;
+    final panelH = screenH - topPad - navBarH;
+    final top = podcast.isExpanded ? topPad : screenH;
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 380),
       curve: Curves.easeInOut,
-      left: 0, right: 0,
+      left: 0,
+      right: 0,
       top: top,
       height: panelH,
       child: Material(
@@ -298,7 +299,7 @@ class _PanelHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show    = podcast.show;
+    final show = podcast.show;
     final episode = podcast.episode;
 
     return GestureDetector(
@@ -320,7 +321,8 @@ class _PanelHeader extends StatelessWidget {
             // Drag handle
             Center(
               child: Container(
-                width: 36, height: 4,
+                width: 36,
+                height: 4,
                 decoration: BoxDecoration(
                   color: Colors.white24,
                   borderRadius: BorderRadius.circular(2),
@@ -333,9 +335,8 @@ class _PanelHeader extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: podcast.collapse,
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Colors.white60, size: 30),
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded,
+                        color: Colors.white60, size: 30),
                   ),
                   Expanded(
                     child: Column(
@@ -409,7 +410,7 @@ class _PanelBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show    = podcast.show;
+    final show = podcast.show;
     final episode = podcast.episode;
     if (show == null || episode == null) return const SizedBox.shrink();
 
@@ -497,8 +498,8 @@ class _PanelBody extends StatelessWidget {
 
 class _CoverArtWidget extends StatelessWidget {
   final PodcastProvider podcast;
-  final Episode         episode;
-  final Show            show;
+  final Episode episode;
+  final Show show;
 
   const _CoverArtWidget({
     required this.podcast,
@@ -563,8 +564,7 @@ class _CoverArtWidget extends StatelessWidget {
                       ),
                 errorBuilder: (_, __, ___) => Container(
                   color: accent.withValues(alpha: 0.3),
-                  child: Icon(Icons.mic_rounded,
-                      color: accent, size: 64),
+                  child: Icon(Icons.mic_rounded, color: accent, size: 64),
                 ),
               );
             },
@@ -579,7 +579,7 @@ class _CoverArtWidget extends StatelessWidget {
 
 class _ProgressBar extends StatefulWidget {
   final PodcastProvider podcast;
-  final Color           accent;
+  final Color accent;
 
   const _ProgressBar({required this.podcast, required this.accent});
 
@@ -628,7 +628,7 @@ class _PanelControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show   = podcast.show;
+    final show = podcast.show;
     final accent = show?.color ?? Colors.white;
 
     return Container(
@@ -654,7 +654,8 @@ class _PanelControls extends StatelessWidget {
             onTap: podcast.togglePlayPause,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: 70, height: 70,
+              width: 70,
+              height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: accent,
@@ -669,7 +670,8 @@ class _PanelControls extends StatelessWidget {
               alignment: Alignment.center,
               child: podcast.isLoading
                   ? const SizedBox(
-                      width: 24, height: 24,
+                      width: 24,
+                      height: 24,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2.5),
                     )
@@ -715,7 +717,8 @@ class _SkipBtn extends StatelessWidget {
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
-        width: 54, height: 54,
+        width: 54,
+        height: 54,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: enabled

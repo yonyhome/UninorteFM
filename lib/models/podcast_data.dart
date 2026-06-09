@@ -41,7 +41,7 @@ const kShows = [
       color: Color.fromARGB(255, 244, 6, 2),
       coverUrl: '',
       description:
-          'Cultura, ideas y conversaciones que hacen más interesante la tarde.',
+          'Encuentra aquí las tendencias más interesantes, las noticias, personajes y hechos más relevantes de la comunidad educativa, música ecléctica y el contenido más variado para acompañarte en tus tardes.Sumérgete con nosotros en el mundo de la cultura popular, explorando lo último en cine, televisión, ciencia, tecnología y mucho más.',
       episodes: [
         Episode(
             title: 'Brasileirices :: Piseiro: del aboio a la pisadinha',
@@ -185,9 +185,11 @@ const kShows = [
   Show(
       id: 'asi-me-decidi',
       name: 'Así me decidí por... Uninorte',
-      color: Color.fromARGB(255, 244, 6, 2),
-      coverUrl: '',
-      description: '',
+      color: Color.fromARGB(255, 255, 87, 34),
+      coverUrl:
+          'https://i.scdn.co/image/ab6765630000ba8a071e9975c90fa32589d82162',
+      description:
+          'Una serie original de nuestra emisora en donde un egresado y un estudiante de una misma carrera se encuentran para hablar de los retos, desafíos, propósitos y oportunidades de su profesión.',
       episodes: [
         Episode(
           title: 'Así me decidí por ... Ingeniería Mecánica',
@@ -293,10 +295,10 @@ const kShows = [
   Show(
       id: 'todos-cuentan',
       name: 'Todos Cuentan',
-      color: Color(0xFFF59E0B),
+      color: Color.fromARGB(255, 255, 193, 7),
       coverUrl: '',
       description:
-          'Derecho, sociedad y ciudadanía desde una perspectiva accesible.',
+          'Todos tenemos historias que contar, cosas que decir, por eso cada uno de nosotros cuenta para constuir paz.Un espacio creado por la División de Derecho, Ciencia Política y Relaciones Internacionales de la Universidad del Norte.',
       episodes: [
         Episode(
           title:
@@ -359,10 +361,10 @@ const kShows = [
   Show(
       id: 'historia-continua',
       name: 'La Historia Continúa',
-      color: Color(0xFF8B5CF6),
+      color: Color.fromARGB(255, 76, 175, 80),
       coverUrl: '',
       description:
-          'Derecho, sociedad y ciudadanía desde una perspectiva accesible.',
+          'La historia continúa una apuesta por la construcción de identidad y ciudadanía Latino Americana.',
       episodes: [
         Episode(
           title:
@@ -428,11 +430,11 @@ const kShows = [
   Show(
       id: 'salud',
       name: 'Salud Uninorte Radio',
-      color: Color(0xFF10B981),
+      color: Color.fromARGB(255, 0, 150, 136),
       coverUrl:
           'https://i.scdn.co/image/ab6765630000ba8a2d4e7f9c3b1a5e8d6c7b4a9f',
       description:
-          'Salud, bienestar y ciencia médica explicados por expertos de Uninorte.',
+          'Este es un espacio de ciencia y salud, que nace como una iniciativa de la División de Ciencias de la Salud de la Universidad del Norte y del Hospital Universidad del Norte. Queremos acercarte la mejor información sobre salud, sustentada en la ciencia y presentada en un lenguaje sencillo. En este primer episodio, exploraremos las cuatro esferas del estilo de vida saludable —mente, nutrición, movimiento y medicina— y te contaremos cómo estos pilares se conectan para ayudarte a vivir mejor.',
       episodes: [
         Episode(
           title:
@@ -570,11 +572,11 @@ const kShows = [
   Show(
     id: 'azul-celeste',
     name: 'Azul Celeste',
-    color: Color(0xFF0EA5E9),
+    color: Color.fromARGB(255, 33, 150, 243),
     coverUrl:
         'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
     description:
-        'Poesía y literatura narrada, un viaje entre palabras y emociones.',
+        'Los libros de poesía se ven en los estantes como aparatos abandonados en un patio al que nadie entra, sometidos al sol y al agua por muchos años. Nadie cree que sirvan. Solo el que va y los desempolva y pone en ellos nuevamente la llave descubre que todavía prenden y que en el fondo de ellos resuena la música de la humanidad. A veces se trata solo de recuerdos y nostalgia, pero casi siempre es mucho más que eso. Estos aparatos, los poemas, cuando funcionan logran que se desplieguen el infinito, la belleza o la violencia. Hacen que toda la vida humana se aparezca ante nosotros. El programa de radio quiere que los radioescuchas presencien a los poemas en funcionamiento.',
     episodes: [
       Episode(
         title: 'Azul Celeste :: A mano armada',
@@ -656,11 +658,11 @@ const kShows = [
   Show(
       id: 'apocalipticos-integrados',
       name: 'Apocalípticos Integrados',
-      color: Color(0xFF0EA5E9),
+      color: Color.fromARGB(255, 63, 81, 181),
       coverUrl:
           'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
       description:
-          'Poesía y literatura narrada, un viaje entre palabras y emociones.',
+          'Un programa para explorar y debatir la cultura mediática en un mundo donde el acceso al contenido nunca ha sido tan amplio. Conducido por los profesores e investigadores del Departamento de Español de la Universidad del Norte Alana Farrah Roa y Andrés Forero, el programa busca abrir conversaciones sobre lo que vemos, leemos y escuchamos, más allá del consumo inmediato, para entender su impacto artístico, social y cultural. Aquí combinamos análisis, recomendaciones y charlas con expertos y aficionados, para pensar juntos en la calidad, el valor y el significado de las producciones mediáticas que nos rodean. Un punto de encuentro entre estudiantes, profesores y creadores, un espacio donde la cultura se vive en comunidad. ',
       episodes: [
         Episode(
           title:
@@ -742,11 +744,11 @@ const kShows = [
   Show(
     id: 'competividad-sostenible',
     name: 'Competitividad Sostenible',
-    color: Color(0xFF0EA5E9),
+    color: Color.fromARGB(255, 156, 39, 176),
     coverUrl:
         'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
     description:
-        'Desarrollar ventajas a nivel empresarial que aseguren las necesidades del presente sin comprometer la capacidad de las generaciones futuras',
+        'Desarrollar ventajas a nivel empresarial que aseguren las necesidades del presente sin comprometer la capacidad de las generaciones futuras es el foco de atención de “Competitividad sostenible”. En este podcast conversaremos con líderes de los grémios, empresarios, emprendedores y organizaciones civiles, para conocer de primera mano sus realidades y experiencias.',
     episodes: [
       Episode(
         title:
@@ -865,11 +867,11 @@ const kShows = [
   Show(
     id: 'emprende',
     name: 'Emprende +',
-    color: Color(0xFF0EA5E9),
+    color: Color.fromARGB(255, 233, 30, 99),
     coverUrl:
-        'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
+        'https://i.scdn.co/image/ab6765630000ba8ad3eed6dd071ad1d80adbe53f',
     description:
-        'Poesía y literatura narrada, un viaje entre palabras y emociones.',
+        '¡Descubre el poder de las historias emprendedoras! En Emprende+, historias que inspiran, exploramos el viaje emprendedor de estudiantes, egresados y empresarios destacados de Uninorte y más allá. Desde los desafíos hasta los triunfos, cada episodio te inspirará a alcanzar tus sueños de emprendimiento. Únete a nosotros mientras exploramos el vibrante mundo del emprendimiento y los grandes eventos que dinamizan el ecosistema de la región a través donde las historias cobran vida. ¿Estás listo para ser parte de la revolución emprendedora en Uninorte y la región caribe?',
     episodes: [
       Episode(
         title:
@@ -923,11 +925,11 @@ const kShows = [
   Show(
       id: 'intellecta',
       name: 'Intellecta',
-      color: Color(0xFF0EA5E9),
+      color: Color.fromARGB(255, 121, 85, 72),
       coverUrl:
-          'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
+          'https://i.scdn.co/image/ab6765630000ba8ad073bb79d45fb4eba1c60e3e',
       description:
-          'Poesía y literatura narrada, un viaje entre palabras y emociones.',
+          'El podcast INTELLECTA es una de las estrategias de apropiación social del conocimiento, que desarrolla en Colombia la Universidad del Norte, para visibilizar la actividad científica de sus investigadores.',
       episodes: [
         Episode(
           title:
@@ -985,11 +987,11 @@ const kShows = [
   Show(
     id: 'la-tercera-mision',
     name: 'La Tercera Misión',
-    color: Color(0xFF0EA5E9),
+    color: Color.fromARGB(255, 96, 125, 139),
     coverUrl:
         'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
     description:
-        'Poesía y literatura narrada, un viaje entre palabras y emociones.',
+        'La Tercera Misión es un programa radial creado para abordar desde distintas miradas temas de impacto del orden local, nacional e internacional. Así mismo, visibilizar la gestión que se hace desde la Universidad del Norte de cara a su extensión. Este espacio es liderado por la Dirección de Extensión de la Universidad del Norte con el apoyo de sus dependencias adscritas.',
     episodes: [
       Episode(
         title:
