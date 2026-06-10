@@ -883,51 +883,72 @@ const kShows = [
         '¡Descubre el poder de las historias emprendedoras! En Emprende+, historias que inspiran, exploramos el viaje emprendedor de estudiantes, egresados y empresarios destacados de Uninorte y más allá. Desde los desafíos hasta los triunfos, cada episodio te inspirará a alcanzar tus sueños de emprendimiento. Únete a nosotros mientras exploramos el vibrante mundo del emprendimiento y los grandes eventos que dinamizan el ecosistema de la región a través donde las historias cobran vida. ¿Estás listo para ser parte de la revolución emprendedora en Uninorte y la región caribe?',
     episodes: [
       Episode(
-        title:
-            'Combinando formación con pasiones. Propiciando eventos. INVITADA: Daniela Bonett',
+        title: 'Del café al cambio: innovación sostenible con aroma global',
         embedUrl:
-            'https://open.spotify.com/embed/episode/0hDezbzipzYFGo8qwTFDlJ?utm_source=generator',
+            'https://open.spotify.com/embed/episode/11Gr7AVXio2u0QrKfWZ9aS?utm_source=generator',
       ),
       Episode(
-        title: 'Finanzas con Sentido :: INVITADA: Marcela Berdugo',
+        title: 'Tradición familiar y equipo que transforma sabores',
         embedUrl:
-            'https://open.spotify.com/embed/episode/5lEubjedtHpYvfyevH70hD?utm_source=generator',
-      ),
-      Episode(
-        title: 'Resiliencia emprendedora :: INVITADO: Diovany Sánches',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/0KheVXkFe06frtnXDhc0v7?utm_source=generator',
-      ),
-      Episode(
-        title: 'Sabor y Negocios :: INVITADA: Patricia Maestre',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/3X2ixDaLSrQQudPahTqsZo?utm_source=generator',
-      ),
-      Episode(
-        title: 'Expansiones exitosas :: Especial Caribe Exponencial',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/38wndwA3dbglRgZaeooxtj?utm_source=generator',
-      ),
-      Episode(
-        title: 'Inversiones con Impacto en Latam',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/2Qzmursa9b4l22CB8iLBjJ?utm_source=generator',
-      ),
-      Episode(
-        title: 'Incubando Talento Emprendedor',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/4xpTP0nPYLgJ9bLUnSx00v?utm_source=generator',
-      ),
-      Episode(
-        title: 'Alianzas Exponenciales',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/7fW8r59sN2fJhyUx4KCZs0?utm_source=generator',
+            'https://open.spotify.com/embed/episode/0oXdtTkLJV4CHNF6TNwL0f?utm_source=generator',
       ),
       Episode(
         title:
-            'Emprendimiento en tacones :: The Local Project + Viora Cosmetics',
+            'Del miedo a la oportunidad: el motor invisible del emprendimiento',
         embedUrl:
-            'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY?utm_source=generator',
+            'https://open.spotify.com/embed/episode/59MCOaWgXFpTPBJhSjsRaN?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'El alma del cambio: líderes y ecosistemas del emprendimiento social',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/6oSolBOZGxMPfSGudsCiX9?utm_source=generator',
+      ),
+      Episode(
+        title: 'Más que diseño: el empaque como estrategia de valor',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0F8CunTTpXmKd0aM3Uf0HO?utm_source=generator',
+      ),
+      Episode(
+        title: 'Pitch con propósito: Cómo vender tu idea sin perder la esencia',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/6KVdqO7n3yAMhWX38nE2iJ?utm_source=generator',
+      ),
+      Episode(
+        title: 'Encendiendo la disrupción: Reinventar desde lo esencial',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2iz9q9C3UZLEggSeaTqAUO?utm_source=generator',
+      ),
+      Episode(
+        title: 'Del Bootcamp a la vitrina',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1jlKDr6LPn7Mycg2B4O2zW?utm_source=generator',
+      ),
+      Episode(
+        title: 'Del prototipo al plato',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5594R9plZ5kZ8DIt6yRomS?utm_source=generator',
+      ),
+      Episode(
+        title: 'Comunidad y bienestar como motor emprendedor',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/001iMVTIECQnVnmBlTDKah?utm_source=generator',
+      ),
+      Episode(
+        title: 'Innovación disruptiva: Ideas que transforman mercados',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1vCkgzVLlUQwy7OcXzoLAt?utm_source=generator',
+      ),
+      Episode(
+        title: 'El poder del emprendimiento social para transformar realidades',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2Crf6xEA5h6xjPbzgk4Ztq?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Economía circular en acción: Transformando residuos en oportunidades',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4rKh3vb4yciotCllbv5ihj?utm_source=generator',
       ),
     ],
   ),
@@ -942,55 +963,63 @@ const kShows = [
     episodes: [
       Episode(
         title:
-            'Combinando formación con pasiones. Propiciando eventos. INVITADA: Daniela Bonett',
+            'Mapeo genético y su impacto en enfermedades como cáncer y alzheimer',
         embedUrl:
-            'https://open.spotify.com/embed/episode/0hDezbzipzYFGo8qwTFDlJ',
+            'https://open.spotify.com/embed/episode/5Ers6UHTP63PGxlI1JmKw9?utm_source=generator',
       ),
       Episode(
-        title: 'Finanzas con Sentido :: INVITADA: Marcela Berdugo',
+        title: 'Geología y geografía nacional',
         embedUrl:
-            'https://open.spotify.com/embed/episode/5lEubjedtHpYvfyevH70hD',
-      ),
-      Episode(
-        title: 'Resiliencia emprendedora :: INVITADO: Diovany Sánches',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/0KheVXkFe06frtnXDhc0v7',
-      ),
-      Episode(
-        title: 'Sabor y Negocios :: INVITADA: Patricia Maestre',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/3X2ixDaLSrQQudPahTqsZo',
-      ),
-      Episode(
-        title: 'Expansiones exitosas :: Especial Caribe Exponencial',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/38wndwA3dbglRgZaeooxtj',
-      ),
-      Episode(
-        title: 'Inversiones con Impacto en Latam',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/2Qzmursa9b4l22CB8iLBjJ',
-      ),
-      Episode(
-        title: 'Incubando Talento Emprendedor',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/4xpTP0nPYLgJ9bLUnSx00v',
-      ),
-      Episode(
-        title: 'Alianzas Exponenciales',
-        embedUrl:
-            'https://open.spotify.com/embed/episode/7fW8r59sN2fJhyUx4KCZs0',
+            'https://open.spotify.com/embed/episode/4tx24EKaW7gMSszDOi5PSD?utm_source=generator',
       ),
       Episode(
         title:
-            'Emprendimiento en tacones :: The Local Project + Viora Cosmetics',
+            'La importancia de la salud mental y el desarrollo emocional en la primera infancia',
         embedUrl:
-            'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
+            'https://open.spotify.com/embed/episode/4xtS1PF90VMllbpMq0KpJP?utm_source=generator',
       ),
       Episode(
-        title: 'Emprende +: Emprendimiento en Tacones',
+        title: 'Bosque seco tropical y cambio climático',
         embedUrl:
-            'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
+            'https://open.spotify.com/embed/episode/4ub060HK436DjTjA3HYqRQ?utm_source=generator',
+      ),
+      Episode(
+        title: 'Las nuevas fuentes de energía que el mundo necesita',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2GIo9YMkDXCsjMNmEYWAyI?utm_source=generator',
+      ),
+      Episode(
+        title: 'Todo lo que nos dicen los fósiles, el sedimento y el clima',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/6wCEsutgIVGF49rgTiRj7p?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La primera gran expedición científica en el delta del río Magdalena',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4rrQ0val6oN34208NEMyN6?utm_source=generator',
+      ),
+      Episode(
+        title: 'Cazadores de virus respiratorios',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4UTRxtD0XXF0CqAWSnrWm6?utm_source=generator',
+      ),
+      Episode(
+        title:
+            '¿Por qué hay edificaciones que soportan un terremoto mejor que otras?',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/7aVcN9yWUMiDkigfVRturD?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Arqueología en el Caribe, detrás de las huellas de los antiguos pobladores.',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/23HHxirEkNbxGwjQGNamdH?utm_source=generator',
+      ),
+      Episode(
+        title: 'Trailer - Intellecta | Uninorte es ciencia',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0Xjbc4yg7mV6xd7qVOAqP9?utm_source=generator',
       ),
     ],
     asset: true,
