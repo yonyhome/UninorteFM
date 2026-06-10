@@ -25,7 +25,8 @@ class PodcastScreen extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 4, height: 24,
+                width: 4,
+                height: 24,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(2),
@@ -35,9 +36,9 @@ class PodcastScreen extends StatelessWidget {
               Text(
                 'Podcast',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
               ),
               const Spacer(),
               Text(
@@ -93,12 +94,12 @@ class _ShowCard extends StatefulWidget {
 class _ShowCardState extends State<_ShowCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-  late final Animation<double>   _scale;
+  late final Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
-    _ctrl  = AnimationController(
+    _ctrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
       lowerBound: 0.95,
@@ -114,8 +115,8 @@ class _ShowCardState extends State<_ShowCard>
     super.dispose();
   }
 
-  void _onTapDown(_)  => _ctrl.reverse();
-  void _onTapUp(_)    => _ctrl.forward();
+  void _onTapDown(_) => _ctrl.reverse();
+  void _onTapUp(_) => _ctrl.forward();
   void _onTapCancel() => _ctrl.forward();
 
   void _openDetail(BuildContext context) {
@@ -182,6 +183,28 @@ class _ShowCardState extends State<_ShowCard>
                         color: show.color.withValues(alpha: 0.18),
                         child: Icon(Icons.mic_rounded,
                             color: show.color, size: 32),
+                      );
+                    }
+                    if (show.asset == true) {
+                      return Image.asset(
+                        'assets/images/${show.id}.jpg',
+                        fit: BoxFit.cover,
+                        frameBuilder: (_, child, frame, wasSync) => wasSync
+                            ? child
+                            : AnimatedOpacity(
+                                opacity: frame == null ? 0 : 1,
+                                duration: const Duration(milliseconds: 350),
+                                child: child,
+                              ),
+                        errorBuilder: (_, __, ___) => Container(
+                          color: show.color.withValues(alpha: 0.18),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.mic_rounded,
+                            color: show.color,
+                            size: 32,
+                          ),
+                        ),
                       );
                     }
                     return Image.network(
@@ -290,7 +313,7 @@ class ShowDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq      = MediaQuery.of(context);
+    final mq = MediaQuery.of(context);
     final podcast = context.watch<PodcastProvider>();
     final isThisShow = podcast.show?.id == show.id;
 
@@ -329,9 +352,10 @@ class ShowDetailScreen extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            width: 8, height: 8,
+                            width: 8,
+                            height: 8,
                             decoration: BoxDecoration(
-                              color: show.color, shape: BoxShape.circle),
+                                color: show.color, shape: BoxShape.circle),
                           ),
                           const SizedBox(width: 8),
                           Text(
@@ -380,25 +404,25 @@ class ShowDetailScreen extends StatelessWidget {
 
               // ── Lista de episodios ─────────────────────────────────────────
               SliverPadding(
-                padding: EdgeInsets.fromLTRB(
-                  16, 0, 16, 120 + mq.viewPadding.bottom),
+                padding:
+                    EdgeInsets.fromLTRB(16, 0, 16, 120 + mq.viewPadding.bottom),
                 sliver: SliverList.builder(
                   itemCount: show.episodes.length,
                   itemBuilder: (_, i) {
-                    final ep         = show.episodes[i];
-                    final isPlaying  = isThisShow &&
+                    final ep = show.episodes[i];
+                    final isPlaying = isThisShow &&
                         podcast.episodeIndex == i &&
                         podcast.isPlaying;
-                    final isCurrent  = isThisShow &&
+                    final isCurrent = isThisShow &&
                         podcast.episodeIndex == i &&
                         podcast.isActive;
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: _EpisodeRow(
-                        show:      show,
-                        episode:   ep,
-                        index:     i,
+                        show: show,
+                        episode: ep,
+                        index: i,
                         isPlaying: isPlaying,
                         isCurrent: isCurrent,
                       ),
@@ -427,8 +451,8 @@ class _ShowHero extends StatelessWidget {
       children: [
         // Imagen de fondo
         FutureBuilder<String?>(
-          future: CoverArtService.forShow(
-            show.id, show.episodes.first.embedUrl),
+          future:
+              CoverArtService.forShow(show.id, show.episodes.first.embedUrl),
           builder: (_, snap) {
             final url = snap.data;
             if (url == null) {
@@ -445,8 +469,23 @@ class _ShowHero extends StatelessWidget {
                 ),
               );
             }
+            if (show.asset == true) {
+              return Image.asset(
+                'assets/images/${show.id}.jpg', // aquí debe ser la ruta del asset, por ejemplo: assets/images/cover.jpg
+                fit: BoxFit.cover,
+                frameBuilder: (_, child, frame, wasSync) => wasSync
+                    ? child
+                    : AnimatedOpacity(
+                        opacity: frame == null ? 0 : 1,
+                        duration: const Duration(milliseconds: 500),
+                        child: child,
+                      ),
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              );
+            }
             return Image.network(
-              url, fit: BoxFit.cover,
+              url,
+              fit: BoxFit.cover,
               frameBuilder: (_, child, frame, wasSync) => wasSync
                   ? child
                   : AnimatedOpacity(
@@ -477,7 +516,9 @@ class _ShowHero extends StatelessWidget {
         ),
         // Borde inferior de color
         Positioned(
-          bottom: 0, left: 0, right: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
           child: Container(
             height: 2,
             color: show.color.withValues(alpha: 0.6),
@@ -530,11 +571,11 @@ class _InfoChip extends StatelessWidget {
 // ─── Fila de episodio ─────────────────────────────────────────────────────────
 
 class _EpisodeRow extends StatelessWidget {
-  final Show    show;
+  final Show show;
   final Episode episode;
-  final int     index;
-  final bool    isPlaying;
-  final bool    isCurrent;
+  final int index;
+  final bool isPlaying;
+  final bool isCurrent;
 
   const _EpisodeRow({
     required this.show,
@@ -582,7 +623,8 @@ class _EpisodeRow extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: SizedBox(
-                  width: 58, height: 58,
+                  width: 58,
+                  height: 58,
                   child: FutureBuilder<String?>(
                     future: CoverArtService.forEpisode(episode.embedUrl),
                     builder: (_, snap) {
@@ -605,7 +647,8 @@ class _EpisodeRow extends StatelessWidget {
                         );
                       }
                       return Image.network(
-                        url, fit: BoxFit.cover,
+                        url,
+                        fit: BoxFit.cover,
                         frameBuilder: (_, child, frame, wasSync) => wasSync
                             ? child
                             : AnimatedOpacity(
@@ -615,8 +658,8 @@ class _EpisodeRow extends StatelessWidget {
                               ),
                         errorBuilder: (_, __, ___) => Container(
                           color: accent.withValues(alpha: 0.2),
-                          child: Icon(Icons.mic_rounded,
-                              color: accent, size: 22),
+                          child:
+                              Icon(Icons.mic_rounded, color: accent, size: 22),
                         ),
                       );
                     },
@@ -689,8 +732,8 @@ class _EpisodeRow extends StatelessWidget {
 // Widget puramente visual — el GestureDetector está en _EpisodeRow
 class _EpisodePlayBtn extends StatelessWidget {
   final Color accent;
-  final bool  isPlaying;
-  final bool  isCurrent;
+  final bool isPlaying;
+  final bool isCurrent;
 
   const _EpisodePlayBtn({
     required this.accent,
@@ -701,24 +744,23 @@ class _EpisodePlayBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40, height: 40,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isCurrent
-            ? accent
-            : accent.withValues(alpha: 0.15),
+        color: isCurrent ? accent : accent.withValues(alpha: 0.15),
         boxShadow: isCurrent
-            ? [BoxShadow(
-                color: accent.withValues(alpha: 0.4),
-                blurRadius: 12,
-                spreadRadius: 1,
-              )]
+            ? [
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  spreadRadius: 1,
+                )
+              ]
             : null,
       ),
       child: Icon(
-        isPlaying
-            ? Icons.pause_rounded
-            : Icons.play_arrow_rounded,
+        isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
         color: isCurrent ? Colors.white : accent,
         size: 22,
       ),

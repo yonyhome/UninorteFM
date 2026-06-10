@@ -23,6 +23,8 @@ class Show {
   /// Descripción corta del show, usada en la tarjeta de categoría.
   final String description;
   final List<Episode> episodes;
+  //Si usa una imagen local
+  final bool asset;
 
   const Show({
     required this.id,
@@ -31,402 +33,408 @@ class Show {
     this.coverUrl = '',
     this.description = '',
     required this.episodes,
+    this.asset = false,
   });
 }
 
 const kShows = [
   Show(
-      id: 'tardeando',
-      name: 'Tardeando',
-      color: Color.fromARGB(255, 244, 6, 2),
-      coverUrl: '',
-      description:
-          'Encuentra aquí las tendencias más interesantes, las noticias, personajes y hechos más relevantes de la comunidad educativa, música ecléctica y el contenido más variado para acompañarte en tus tardes.Sumérgete con nosotros en el mundo de la cultura popular, explorando lo último en cine, televisión, ciencia, tecnología y mucho más.',
-      episodes: [
-        Episode(
-            title: 'Brasileirices :: Piseiro: del aboio a la pisadinha',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/10lMzvhQQE3krBMvvWkJNB?utm_source=generator'),
-        Episode(
-            title:
-                'Así Suena Colombia :: Aria Vega y el pulso musical del Caribe colombiano',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/5ZzanKkJQk9m2aolUZrlha?utm_source=generator'),
-        Episode(
-            title: 'Brasileirices :: Historia del Forró',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/1q5rRq1ZdCu4FtEFgvNRDy?utm_source=generator'),
-        Episode(
-            title:
-                'Michelle Char, una Reina que supo leer el contexto de la ciudad',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/3oHc66jckUOuw3IGWNtKmq?utm_source=generator'),
-        Episode(
-            title:
-                'KPOP 101 :: BTS y ARIRANG: un análisis entre tradición y modernidad',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/0zILjVrg6Prbhxm1rjxwrZ?utm_source=generator'),
-        Episode(
-            title: 'Así Suena Colombia :: Pernett y su cumbia galáctica',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/6wMREzU5hQPBfcyHRhy23a?utm_source=generator'),
-        Episode(
-            title:
-                'Hey Prende La Luz :: ¡Energía para el futuro, energía para todos!',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/4dML6t908dJy7bo3Op8vsD?utm_source=generator'),
-        Episode(
-            title:
-                'Pensar en la era de la IA :: Cómo cultivar el juicio propio frente a la automatización del conocimiento',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/4Z494BvefZu0gt9Rgl3hTX?utm_source=generator'),
-        Episode(
-            title: 'Encuéntrate :: Juicio literario. Víctor Frankenstein',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/3ivnDFbge83cZwPooRf0qg?utm_source=generator'),
-        Episode(
-            title:
-                'Todo es político :: Paz a la Página: Letras que Sanan. Entrevista a Lina Trigos',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/1qxBg4AgTjQyiExJ0DlmuX?utm_source=generator'),
-        Episode(
-            title:
-                'Los Egresados Hacen Noticia :: Emprendimiento de alto impacto, economía circular y el liderazgo del Caribe en la agenda climática global',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/6cTtsgmffh35hgfcWzPNix?utm_source=generator'),
-        Episode(
-            title: 'Encuéntrate :: Sembrar antes de leer',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/3btfV9bX4PBMsxQ4E5VEQo?utm_source=generator'),
-        Episode(
-            title:
-                'Así Suena Colombia :: Un recorrido pista a pista por los Días de Cumbia de Cumbia Queen',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/1sTWRSFmNGf7FESSicJFFF?utm_source=generator'),
-        Episode(
-            title:
-                'Especial Día del Jazz :: El piano como puente entre la academia europea y el sabor barranquillero',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/2UWT8MKwuC068KgB47lj9O?utm_source=generator'),
-        Episode(
-            title:
-                'Alimentación Funcional y el poder de las frutas :: Entrevista a Coralia Osorio',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/7xZ2BESEg4AVthrNiXlPcu?utm_source=generator'),
-        Episode(
-            title:
-                'Ecodrones: La tecnología local que vigila la Ciénaga de Mallorquín',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/16Yg1xvINcS11lJAnPYJl4?utm_source=generator'),
-        Episode(
-            title:
-                'Hablemos de Negocios :: No siempre gana la empresa más ordenada',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/2cRvDZIIMOV5OuktzC3XwS?utm_source=generator'),
-        Episode(
-            title:
-                'Revivir una lengua :: El arte de traducir la memoria en Barrio Abajo',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/59vandW9U2Buy4lZZXTYOw?utm_source=generator'),
-        Episode(
-            title:
-                'Los Egresados Hacen Noticia :: Carlos Van-Strahlen, el estratega detrás de los "cracks" del fútbol mundial',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/56PaeAspeOH6u87QlYLYVW?utm_source=generator'),
-        Episode(
-            title:
-                '¿Barranquilla de moda? :: Entrevista a Toni Celia. Director Arte y Cultura Uninorte',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/2VXC6niFXaTrPlhYgw4A04?utm_source=generator'),
-        Episode(
-            title: 'Mingo Sánchez y su propio territorio Gauta',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/2Al0tnx6AGZmRkRlWom6nr?utm_source=generator'),
-        Episode(
-            title:
-                'La ciencia detrás de por qué no puedes dejar de hacer scroll',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/4flc5g1vray4tSDSsRRXsn?utm_source=generator'),
-        Episode(
-            title:
-                'Crónica :: La Cumbia en buenas manos. La nueva generación de la Cumbia Moderna de Soledad',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/7erSo7n6s27wg1ewWc7oJF?utm_source=generator'),
-        Episode(
-            title:
-                'Todo es Político :: Reggaetón como fenómeno musical, cultural, social y político',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/7E37MHpsRoX7WnonScfRh0?utm_source=generator'),
-        Episode(
-            title:
-                'Amores modernos, relaciones no monogámicas y poliamor :: INVITADA: María Tambo',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/2gq3PTDCULQfS2SJS716eN?utm_source=generator'),
-        Episode(
-            title:
-                'Cápsulas de Salud :: Mitos, verdades y riesgos del diseño de sonrisa',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/5r3a6f6N0tamJJNmT8KkCG?utm_source=generator'),
-        Episode(
-            title: 'La Pizarra :: La Felicidad también se enseña',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/3H1n3d8WI7zjnCXAvaDxpM?utm_source=generator'),
-        Episode(
-            title:
-                'Tinta Sonora :: BAQREADS, la comunidad de lectores en Barranquilla',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/10bj02aE6AEpFMWNHjo0FR?utm_source=generator'),
-        Episode(
-            title:
-                'Salud Mental :: ¿Puede una inteligencia artificial ser tu terapeuta?',
-            embedUrl:
-                'https://open.spotify.com/embed/episode/34vr2a2ocrMp8DHAW9SvyL?utm_source=generator'),
-      ]),
+    id: 'tardeando',
+    name: 'Tardeando',
+    color: Color.fromARGB(255, 244, 6, 2),
+    coverUrl: '',
+    description:
+        'Encuentra aquí las tendencias más interesantes, las noticias, personajes y hechos más relevantes de la comunidad educativa, música ecléctica y el contenido más variado para acompañarte en tus tardes.Sumérgete con nosotros en el mundo de la cultura popular, explorando lo último en cine, televisión, ciencia, tecnología y mucho más.',
+    episodes: [
+      Episode(
+          title: 'Brasileirices :: Piseiro: del aboio a la pisadinha',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/10lMzvhQQE3krBMvvWkJNB?utm_source=generator'),
+      Episode(
+          title:
+              'Así Suena Colombia :: Aria Vega y el pulso musical del Caribe colombiano',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/5ZzanKkJQk9m2aolUZrlha?utm_source=generator'),
+      Episode(
+          title: 'Brasileirices :: Historia del Forró',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/1q5rRq1ZdCu4FtEFgvNRDy?utm_source=generator'),
+      Episode(
+          title:
+              'Michelle Char, una Reina que supo leer el contexto de la ciudad',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/3oHc66jckUOuw3IGWNtKmq?utm_source=generator'),
+      Episode(
+          title:
+              'KPOP 101 :: BTS y ARIRANG: un análisis entre tradición y modernidad',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/0zILjVrg6Prbhxm1rjxwrZ?utm_source=generator'),
+      Episode(
+          title: 'Así Suena Colombia :: Pernett y su cumbia galáctica',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/6wMREzU5hQPBfcyHRhy23a?utm_source=generator'),
+      Episode(
+          title:
+              'Hey Prende La Luz :: ¡Energía para el futuro, energía para todos!',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/4dML6t908dJy7bo3Op8vsD?utm_source=generator'),
+      Episode(
+          title:
+              'Pensar en la era de la IA :: Cómo cultivar el juicio propio frente a la automatización del conocimiento',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/4Z494BvefZu0gt9Rgl3hTX?utm_source=generator'),
+      Episode(
+          title: 'Encuéntrate :: Juicio literario. Víctor Frankenstein',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/3ivnDFbge83cZwPooRf0qg?utm_source=generator'),
+      Episode(
+          title:
+              'Todo es político :: Paz a la Página: Letras que Sanan. Entrevista a Lina Trigos',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/1qxBg4AgTjQyiExJ0DlmuX?utm_source=generator'),
+      Episode(
+          title:
+              'Los Egresados Hacen Noticia :: Emprendimiento de alto impacto, economía circular y el liderazgo del Caribe en la agenda climática global',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/6cTtsgmffh35hgfcWzPNix?utm_source=generator'),
+      Episode(
+          title: 'Encuéntrate :: Sembrar antes de leer',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/3btfV9bX4PBMsxQ4E5VEQo?utm_source=generator'),
+      Episode(
+          title:
+              'Así Suena Colombia :: Un recorrido pista a pista por los Días de Cumbia de Cumbia Queen',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/1sTWRSFmNGf7FESSicJFFF?utm_source=generator'),
+      Episode(
+          title:
+              'Especial Día del Jazz :: El piano como puente entre la academia europea y el sabor barranquillero',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/2UWT8MKwuC068KgB47lj9O?utm_source=generator'),
+      Episode(
+          title:
+              'Alimentación Funcional y el poder de las frutas :: Entrevista a Coralia Osorio',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/7xZ2BESEg4AVthrNiXlPcu?utm_source=generator'),
+      Episode(
+          title:
+              'Ecodrones: La tecnología local que vigila la Ciénaga de Mallorquín',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/16Yg1xvINcS11lJAnPYJl4?utm_source=generator'),
+      Episode(
+          title:
+              'Hablemos de Negocios :: No siempre gana la empresa más ordenada',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/2cRvDZIIMOV5OuktzC3XwS?utm_source=generator'),
+      Episode(
+          title:
+              'Revivir una lengua :: El arte de traducir la memoria en Barrio Abajo',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/59vandW9U2Buy4lZZXTYOw?utm_source=generator'),
+      Episode(
+          title:
+              'Los Egresados Hacen Noticia :: Carlos Van-Strahlen, el estratega detrás de los "cracks" del fútbol mundial',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/56PaeAspeOH6u87QlYLYVW?utm_source=generator'),
+      Episode(
+          title:
+              '¿Barranquilla de moda? :: Entrevista a Toni Celia. Director Arte y Cultura Uninorte',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/2VXC6niFXaTrPlhYgw4A04?utm_source=generator'),
+      Episode(
+          title: 'Mingo Sánchez y su propio territorio Gauta',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/2Al0tnx6AGZmRkRlWom6nr?utm_source=generator'),
+      Episode(
+          title: 'La ciencia detrás de por qué no puedes dejar de hacer scroll',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/4flc5g1vray4tSDSsRRXsn?utm_source=generator'),
+      Episode(
+          title:
+              'Crónica :: La Cumbia en buenas manos. La nueva generación de la Cumbia Moderna de Soledad',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/7erSo7n6s27wg1ewWc7oJF?utm_source=generator'),
+      Episode(
+          title:
+              'Todo es Político :: Reggaetón como fenómeno musical, cultural, social y político',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/7E37MHpsRoX7WnonScfRh0?utm_source=generator'),
+      Episode(
+          title:
+              'Amores modernos, relaciones no monogámicas y poliamor :: INVITADA: María Tambo',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/2gq3PTDCULQfS2SJS716eN?utm_source=generator'),
+      Episode(
+          title:
+              'Cápsulas de Salud :: Mitos, verdades y riesgos del diseño de sonrisa',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/5r3a6f6N0tamJJNmT8KkCG?utm_source=generator'),
+      Episode(
+          title: 'La Pizarra :: La Felicidad también se enseña',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/3H1n3d8WI7zjnCXAvaDxpM?utm_source=generator'),
+      Episode(
+          title:
+              'Tinta Sonora :: BAQREADS, la comunidad de lectores en Barranquilla',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/10bj02aE6AEpFMWNHjo0FR?utm_source=generator'),
+      Episode(
+          title:
+              'Salud Mental :: ¿Puede una inteligencia artificial ser tu terapeuta?',
+          embedUrl:
+              'https://open.spotify.com/embed/episode/34vr2a2ocrMp8DHAW9SvyL?utm_source=generator'),
+    ],
+    asset: true,
+  ),
   Show(
-      id: 'asi-me-decidi',
-      name: 'Así me decidí por... Uninorte',
-      color: Color.fromARGB(255, 255, 87, 34),
-      coverUrl:
-          'https://i.scdn.co/image/ab6765630000ba8a071e9975c90fa32589d82162',
-      description:
-          'Una serie original de nuestra emisora en donde un egresado y un estudiante de una misma carrera se encuentran para hablar de los retos, desafíos, propósitos y oportunidades de su profesión.',
-      episodes: [
-        Episode(
-          title: 'Así me decidí por ... Ingeniería Mecánica',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1W4B9z7f88al2ghrzHEvYm?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Economía',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0Xt7D8EpOts84BBxNgV5xq?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Filosofía y Humanidades',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/259gFgH13ePgoDYFiZdl2E?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Música',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5wFKezPTsf29xbjkA8QCHp?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Odontología',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5s5JB3yZfFG8gl2crse7YK?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Negocios Internacionales',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/7naEgdVoHGjIDwdzm98C1n?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Geología',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5hZfuJkm0XSfHPieW5lpXA?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Ciencias Políticas',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/61fpRwOsokcK5O1ThgBXvg?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Ingeniería Civíl',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4ewmf7who8kGsyzMmYbibc?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Diseño Gráfico',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2zTvXzzfK0Ppna2QIPOdw6?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Derecho',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1kfR7jVnK2g33cZnHiaDx6?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Relaciones Internacionales',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5WABavkbG2AgalROstgK9B?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Ciencia de Datos',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5S11FzWMOuUh5nWXk3puXh?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Matemáticas',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4n8WSkyxfzOTTpBhUthv7a?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Contaduría',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4QQ7h1jiOZaNZqMe5z4DOR?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Administración de Empresas',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/02ugIBWAziWIWNuVBwFsFt?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Medicina',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1U4AZgIdyWITl5Wi4AtSXl?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Enfermería',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0VD1YsBK42arEo68jKDKLy?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Ingeniería Industrial',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/382NqdOQ592hy8P2Kq4CZ4?utm_source=generator',
-        ),
-        Episode(
-          title: 'Así me decidí por ... Ingeniería Eléctrica',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2x3S2oiB8MnF4OS38zbNEI?utm_source=generator',
-        ),
-      ]),
+    id: 'asi-me-decidi',
+    name: 'Así me decidí por... Uninorte',
+    color: Color.fromARGB(255, 255, 87, 34),
+    coverUrl:
+        'https://i.scdn.co/image/ab6765630000ba8a071e9975c90fa32589d82162',
+    description:
+        'Una serie original de nuestra emisora en donde un egresado y un estudiante de una misma carrera se encuentran para hablar de los retos, desafíos, propósitos y oportunidades de su profesión.',
+    episodes: [
+      Episode(
+        title: 'Así me decidí por ... Ingeniería Mecánica',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1W4B9z7f88al2ghrzHEvYm?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Economía',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0Xt7D8EpOts84BBxNgV5xq?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Filosofía y Humanidades',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/259gFgH13ePgoDYFiZdl2E?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Música',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5wFKezPTsf29xbjkA8QCHp?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Odontología',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5s5JB3yZfFG8gl2crse7YK?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Negocios Internacionales',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/7naEgdVoHGjIDwdzm98C1n?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Geología',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5hZfuJkm0XSfHPieW5lpXA?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Ciencias Políticas',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/61fpRwOsokcK5O1ThgBXvg?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Ingeniería Civíl',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4ewmf7who8kGsyzMmYbibc?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Diseño Gráfico',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2zTvXzzfK0Ppna2QIPOdw6?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Derecho',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1kfR7jVnK2g33cZnHiaDx6?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Relaciones Internacionales',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5WABavkbG2AgalROstgK9B?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Ciencia de Datos',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5S11FzWMOuUh5nWXk3puXh?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Matemáticas',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4n8WSkyxfzOTTpBhUthv7a?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Contaduría',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4QQ7h1jiOZaNZqMe5z4DOR?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Administración de Empresas',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/02ugIBWAziWIWNuVBwFsFt?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Medicina',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1U4AZgIdyWITl5Wi4AtSXl?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Enfermería',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0VD1YsBK42arEo68jKDKLy?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Ingeniería Industrial',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/382NqdOQ592hy8P2Kq4CZ4?utm_source=generator',
+      ),
+      Episode(
+        title: 'Así me decidí por ... Ingeniería Eléctrica',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2x3S2oiB8MnF4OS38zbNEI?utm_source=generator',
+      ),
+    ],
+    asset: true,
+  ),
   Show(
-      id: 'todos-cuentan',
-      name: 'Todos Cuentan',
-      color: Color.fromARGB(255, 255, 193, 7),
-      coverUrl: '',
-      description:
-          'Todos tenemos historias que contar, cosas que decir, por eso cada uno de nosotros cuenta para constuir paz.Un espacio creado por la División de Derecho, Ciencia Política y Relaciones Internacionales de la Universidad del Norte.',
-      episodes: [
-        Episode(
-          title:
-              'Todos Cuentan :: Empresa privada y protección de derechos humanos en zonas de conflicto armado',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/6HYTHFcXLsfVj6YAlYmBzp?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: Migraciones y su marco normativo a nivel nacional e internacional',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1hakcxn7CVmhabQrb3MIgZ?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: Crueldad en el derecho y derecho a la crueldad. Diálogos interdisciplinarios',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0PATkxo7iKXCJmRoqzPDee?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: El impacto de los Criptoactivos en Colombia. INVITADO: Mario de la Puente',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1pJ42uGKougV15jeq5JEoP?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: 8vo Congreso Nacional de Ciencia Política - ACCPOL',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/7xvUUEjEUGl9GG5x4e7f04?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: El Informe Final de la Comisión de la Verdad "Hay Futuro si Hay Verdad"',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4wPoOb81JsqMIU2BzlBnZM?utm_source=generator',
-        ),
-        Episode(
-          title: 'Todos Cuentan :: Cooperación académica en Colombia',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/63vsSaDPKqALHUXSc1nSLn?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Todos Cuentan :: La localización en el marco de la cooperación internacional',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/53TOF0iWu0uQIbZwOAv0AH?utm_source=generator',
-        ),
-        Episode(
-          title: 'Todos Cuentan :: La crisis de la integración regional',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1ZnCuMqKbt0SNwBquvnRRv?utm_source=generator',
-        ),
-        Episode(
-          title: 'Todos Cuentan :: Resiliencia Territorial',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2lFBO7cmvlAfZvwcJjDbrH?utm_source=generator',
-        ),
-      ]),
+    id: 'todos-cuentan',
+    name: 'Todos Cuentan',
+    color: Color.fromARGB(255, 255, 193, 7),
+    coverUrl: '',
+    description:
+        'Todos tenemos historias que contar, cosas que decir, por eso cada uno de nosotros cuenta para constuir paz.Un espacio creado por la División de Derecho, Ciencia Política y Relaciones Internacionales de la Universidad del Norte.',
+    episodes: [
+      Episode(
+        title:
+            'Todos Cuentan :: Empresa privada y protección de derechos humanos en zonas de conflicto armado',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/6HYTHFcXLsfVj6YAlYmBzp?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: Migraciones y su marco normativo a nivel nacional e internacional',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1hakcxn7CVmhabQrb3MIgZ?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: Crueldad en el derecho y derecho a la crueldad. Diálogos interdisciplinarios',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0PATkxo7iKXCJmRoqzPDee?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: El impacto de los Criptoactivos en Colombia. INVITADO: Mario de la Puente',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1pJ42uGKougV15jeq5JEoP?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: 8vo Congreso Nacional de Ciencia Política - ACCPOL',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/7xvUUEjEUGl9GG5x4e7f04?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: El Informe Final de la Comisión de la Verdad "Hay Futuro si Hay Verdad"',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4wPoOb81JsqMIU2BzlBnZM?utm_source=generator',
+      ),
+      Episode(
+        title: 'Todos Cuentan :: Cooperación académica en Colombia',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/63vsSaDPKqALHUXSc1nSLn?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Todos Cuentan :: La localización en el marco de la cooperación internacional',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/53TOF0iWu0uQIbZwOAv0AH?utm_source=generator',
+      ),
+      Episode(
+        title: 'Todos Cuentan :: La crisis de la integración regional',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1ZnCuMqKbt0SNwBquvnRRv?utm_source=generator',
+      ),
+      Episode(
+        title: 'Todos Cuentan :: Resiliencia Territorial',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2lFBO7cmvlAfZvwcJjDbrH?utm_source=generator',
+      ),
+    ],
+    asset: true,
+  ),
   Show(
-      id: 'historia-continua',
-      name: 'La Historia Continúa',
-      color: Color.fromARGB(255, 76, 175, 80),
-      coverUrl: '',
-      description:
-          'La historia continúa una apuesta por la construcción de identidad y ciudadanía Latino Americana.',
-      episodes: [
-        Episode(
-          title:
-              'La Historia Continúa :: ¿Crisis del modelo liberal? Parte II. INVITADO: Héctor Galeano',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/08gXLHhQOmfYwsxNMcZ6qx?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: ¿Crisis del modelo liberal? Parte I. INVITADO: Héctor Galeano',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3aoQeVxFom29ajW9o2WAAt?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Colombia, Región e Historia. Parte II',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4FmtD8Zq19AXsWOsoi83dl?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Colombia, Región e Historia. Parte I',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/54WOo0XdE169AUeMdUA4BB?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Abolicionismo y fin del comercio de esclavos en el imperio español. Parte II',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2bIrYGVZ7ixb2SImP30YyT?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Abolicionismo y fin del comercio de esclavos en el imperio español. Parte I',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4HNzvkVhA4HNEhvOUADXAb?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Importancia geopolítica de los mares. Parte II',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3650ntG85yyRl0jRCDEQNi?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Importancia geopolítica de los mares. Parte I',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/1eR6ciGtj4ULVDzeCaicUo?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: Los peligros de la diplomacia en redes sociales',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5ZDevDDYLDwEAgdMqzqg4R?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'La Historia Continúa :: América Latina en la nueva era de Donald Trump. Parte II',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5U3cUuj3fBTBO3BtC0O3pV?utm_source=generator',
-        ),
-      ]),
+    id: 'historia-continua',
+    name: 'La Historia Continúa',
+    color: Color.fromARGB(255, 76, 175, 80),
+    coverUrl: '',
+    description:
+        'La historia continúa una apuesta por la construcción de identidad y ciudadanía Latino Americana.',
+    episodes: [
+      Episode(
+        title:
+            'La Historia Continúa :: ¿Crisis del modelo liberal? Parte II. INVITADO: Héctor Galeano',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/08gXLHhQOmfYwsxNMcZ6qx?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: ¿Crisis del modelo liberal? Parte I. INVITADO: Héctor Galeano',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3aoQeVxFom29ajW9o2WAAt?utm_source=generator',
+      ),
+      Episode(
+        title: 'La Historia Continúa :: Colombia, Región e Historia. Parte II',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4FmtD8Zq19AXsWOsoi83dl?utm_source=generator',
+      ),
+      Episode(
+        title: 'La Historia Continúa :: Colombia, Región e Historia. Parte I',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/54WOo0XdE169AUeMdUA4BB?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: Abolicionismo y fin del comercio de esclavos en el imperio español. Parte II',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2bIrYGVZ7ixb2SImP30YyT?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: Abolicionismo y fin del comercio de esclavos en el imperio español. Parte I',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4HNzvkVhA4HNEhvOUADXAb?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: Importancia geopolítica de los mares. Parte II',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3650ntG85yyRl0jRCDEQNi?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: Importancia geopolítica de los mares. Parte I',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/1eR6ciGtj4ULVDzeCaicUo?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: Los peligros de la diplomacia en redes sociales',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5ZDevDDYLDwEAgdMqzqg4R?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'La Historia Continúa :: América Latina en la nueva era de Donald Trump. Parte II',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5U3cUuj3fBTBO3BtC0O3pV?utm_source=generator',
+      ),
+    ],
+    asset: true,
+  ),
   Show(
       id: 'salud',
       name: 'Salud Uninorte Radio',
@@ -656,91 +664,92 @@ const kShows = [
     ],
   ),
   Show(
-      id: 'apocalipticos-integrados',
-      name: 'Apocalípticos Integrados',
-      color: Color.fromARGB(255, 63, 81, 181),
-      coverUrl:
-          'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
-      description:
-          'Un programa para explorar y debatir la cultura mediática en un mundo donde el acceso al contenido nunca ha sido tan amplio. Conducido por los profesores e investigadores del Departamento de Español de la Universidad del Norte Alana Farrah Roa y Andrés Forero, el programa busca abrir conversaciones sobre lo que vemos, leemos y escuchamos, más allá del consumo inmediato, para entender su impacto artístico, social y cultural. Aquí combinamos análisis, recomendaciones y charlas con expertos y aficionados, para pensar juntos en la calidad, el valor y el significado de las producciones mediáticas que nos rodean. Un punto de encuentro entre estudiantes, profesores y creadores, un espacio donde la cultura se vive en comunidad. ',
-      episodes: [
-        Episode(
-          title:
-              'Apocalípticos Integrados :: T1E14: Cultura en tránsito. Parte II',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2tXtSjPC8YWpvdCgOwJ9wK?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Apocalípticos Integrados :: T1E13: Cultura en tránsito. Parte I',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2ECkuOFB0BRzmf2dHYxpfM?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos Integrados :: T1E12: Máquinas de escribir',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0FTaKqjdVlJn525pWBZkml?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Apocalípticos Integrados :: T1E11: ¿Sigues ahí? Siguiente episodio en 5, 4, 3…',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3QaKoEL6TK6U1HVKyRLgq0?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos Integrados :: T1E10: Predicciones mediáticas',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/6D2Km19BDi6m5lmuVsq0yY?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos Integrados :: T1E9: Historias que nos cuentan',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/7FxUOl53bBSayz3tV2Mbvj?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos Integrados :: T1E8: La mente narrada',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4vfXysg9e1UYMJh3ZIUSSG?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Apocalípticos Integrados :: T1E7: Conversación en plano secuencia: Especial sobre “Adolescence”',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2lBDPkMIDRXltBAWBIaBs2?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Apocalípticos Integrados :: T1E6: Nostalgia y cultura reciclada',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4d9ZpvRmtYQLcRg16TLirZ?utm_source=generator',
-        ),
-        Episode(
-          title:
-              'Apocalípticos integrados :: T1E5: ¿El algoritmo decide por ti?',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/707eWEvTAFYAnwt5epOoFq?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos integrados :: T1E4: Oscar time',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5Aexch6htVusLiU1SfKdLg?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos integrados :: T1E3: Al lado del camino',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3WvH1v90bSjJVpwwR6kyyy?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos integrados :: T1E2: ¿Cultura intermedia?',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3Z2901RFbC92ukfcdDTfNS?utm_source=generator',
-        ),
-        Episode(
-          title: 'Apocalípticos integrados :: T1E1: Episodio piloto',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5f9QbcbqeWXKkkYYTurlCS?utm_source=generator',
-        ),
-      ]),
+    id: 'apocalipticos-integrados',
+    name: 'Apocalípticos Integrados',
+    color: Color.fromARGB(255, 63, 81, 181),
+    coverUrl:
+        'https://i.scdn.co/image/ab6765630000ba8a6d1e0c27af93e6c6dc0f9a0a',
+    description:
+        'Un programa para explorar y debatir la cultura mediática en un mundo donde el acceso al contenido nunca ha sido tan amplio. Conducido por los profesores e investigadores del Departamento de Español de la Universidad del Norte Alana Farrah Roa y Andrés Forero, el programa busca abrir conversaciones sobre lo que vemos, leemos y escuchamos, más allá del consumo inmediato, para entender su impacto artístico, social y cultural. Aquí combinamos análisis, recomendaciones y charlas con expertos y aficionados, para pensar juntos en la calidad, el valor y el significado de las producciones mediáticas que nos rodean. Un punto de encuentro entre estudiantes, profesores y creadores, un espacio donde la cultura se vive en comunidad. ',
+    episodes: [
+      Episode(
+        title:
+            'Apocalípticos Integrados :: T1E14: Cultura en tránsito. Parte II',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2tXtSjPC8YWpvdCgOwJ9wK?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Apocalípticos Integrados :: T1E13: Cultura en tránsito. Parte I',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2ECkuOFB0BRzmf2dHYxpfM?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos Integrados :: T1E12: Máquinas de escribir',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0FTaKqjdVlJn525pWBZkml?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Apocalípticos Integrados :: T1E11: ¿Sigues ahí? Siguiente episodio en 5, 4, 3…',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3QaKoEL6TK6U1HVKyRLgq0?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos Integrados :: T1E10: Predicciones mediáticas',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/6D2Km19BDi6m5lmuVsq0yY?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos Integrados :: T1E9: Historias que nos cuentan',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/7FxUOl53bBSayz3tV2Mbvj?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos Integrados :: T1E8: La mente narrada',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4vfXysg9e1UYMJh3ZIUSSG?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Apocalípticos Integrados :: T1E7: Conversación en plano secuencia: Especial sobre “Adolescence”',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2lBDPkMIDRXltBAWBIaBs2?utm_source=generator',
+      ),
+      Episode(
+        title:
+            'Apocalípticos Integrados :: T1E6: Nostalgia y cultura reciclada',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4d9ZpvRmtYQLcRg16TLirZ?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos integrados :: T1E5: ¿El algoritmo decide por ti?',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/707eWEvTAFYAnwt5epOoFq?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos integrados :: T1E4: Oscar time',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5Aexch6htVusLiU1SfKdLg?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos integrados :: T1E3: Al lado del camino',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3WvH1v90bSjJVpwwR6kyyy?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos integrados :: T1E2: ¿Cultura intermedia?',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3Z2901RFbC92ukfcdDTfNS?utm_source=generator',
+      ),
+      Episode(
+        title: 'Apocalípticos integrados :: T1E1: Episodio piloto',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5f9QbcbqeWXKkkYYTurlCS?utm_source=generator',
+      ),
+    ],
+    asset: true,
+  ),
   Show(
     id: 'competividad-sostenible',
     name: 'Competitividad Sostenible',
@@ -923,67 +932,69 @@ const kShows = [
     ],
   ),
   Show(
-      id: 'intellecta',
-      name: 'Intellecta',
-      color: Color.fromARGB(255, 121, 85, 72),
-      coverUrl:
-          'https://i.scdn.co/image/ab6765630000ba8ad073bb79d45fb4eba1c60e3e',
-      description:
-          'El podcast INTELLECTA es una de las estrategias de apropiación social del conocimiento, que desarrolla en Colombia la Universidad del Norte, para visibilizar la actividad científica de sus investigadores.',
-      episodes: [
-        Episode(
-          title:
-              'Combinando formación con pasiones. Propiciando eventos. INVITADA: Daniela Bonett',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0hDezbzipzYFGo8qwTFDlJ',
-        ),
-        Episode(
-          title: 'Finanzas con Sentido :: INVITADA: Marcela Berdugo',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5lEubjedtHpYvfyevH70hD',
-        ),
-        Episode(
-          title: 'Resiliencia emprendedora :: INVITADO: Diovany Sánches',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/0KheVXkFe06frtnXDhc0v7',
-        ),
-        Episode(
-          title: 'Sabor y Negocios :: INVITADA: Patricia Maestre',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/3X2ixDaLSrQQudPahTqsZo',
-        ),
-        Episode(
-          title: 'Expansiones exitosas :: Especial Caribe Exponencial',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/38wndwA3dbglRgZaeooxtj',
-        ),
-        Episode(
-          title: 'Inversiones con Impacto en Latam',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/2Qzmursa9b4l22CB8iLBjJ',
-        ),
-        Episode(
-          title: 'Incubando Talento Emprendedor',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/4xpTP0nPYLgJ9bLUnSx00v',
-        ),
-        Episode(
-          title: 'Alianzas Exponenciales',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/7fW8r59sN2fJhyUx4KCZs0',
-        ),
-        Episode(
-          title:
-              'Emprendimiento en tacones :: The Local Project + Viora Cosmetics',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
-        ),
-        Episode(
-          title: 'Emprende +: Emprendimiento en Tacones',
-          embedUrl:
-              'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
-        ),
-      ]),
+    id: 'intellecta',
+    name: 'Intellecta',
+    color: Color.fromARGB(255, 121, 85, 72),
+    coverUrl:
+        'https://i.scdn.co/image/ab6765630000ba8ad073bb79d45fb4eba1c60e3e',
+    description:
+        'El podcast INTELLECTA es una de las estrategias de apropiación social del conocimiento, que desarrolla en Colombia la Universidad del Norte, para visibilizar la actividad científica de sus investigadores.',
+    episodes: [
+      Episode(
+        title:
+            'Combinando formación con pasiones. Propiciando eventos. INVITADA: Daniela Bonett',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0hDezbzipzYFGo8qwTFDlJ',
+      ),
+      Episode(
+        title: 'Finanzas con Sentido :: INVITADA: Marcela Berdugo',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5lEubjedtHpYvfyevH70hD',
+      ),
+      Episode(
+        title: 'Resiliencia emprendedora :: INVITADO: Diovany Sánches',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/0KheVXkFe06frtnXDhc0v7',
+      ),
+      Episode(
+        title: 'Sabor y Negocios :: INVITADA: Patricia Maestre',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/3X2ixDaLSrQQudPahTqsZo',
+      ),
+      Episode(
+        title: 'Expansiones exitosas :: Especial Caribe Exponencial',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/38wndwA3dbglRgZaeooxtj',
+      ),
+      Episode(
+        title: 'Inversiones con Impacto en Latam',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/2Qzmursa9b4l22CB8iLBjJ',
+      ),
+      Episode(
+        title: 'Incubando Talento Emprendedor',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/4xpTP0nPYLgJ9bLUnSx00v',
+      ),
+      Episode(
+        title: 'Alianzas Exponenciales',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/7fW8r59sN2fJhyUx4KCZs0',
+      ),
+      Episode(
+        title:
+            'Emprendimiento en tacones :: The Local Project + Viora Cosmetics',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
+      ),
+      Episode(
+        title: 'Emprende +: Emprendimiento en Tacones',
+        embedUrl:
+            'https://open.spotify.com/embed/episode/5TUXN9oGowJikhbg0YjzDY',
+      ),
+    ],
+    asset: true,
+  ),
   Show(
     id: 'la-tercera-mision',
     name: 'La Tercera Misión',
@@ -1051,6 +1062,7 @@ const kShows = [
             'https://open.spotify.com/embed/episode/0bTrG0kUKa6siSs1x48yow?utm_source=generator',
       ),
     ],
+    asset: true,
   ),
   /*
   Show(
